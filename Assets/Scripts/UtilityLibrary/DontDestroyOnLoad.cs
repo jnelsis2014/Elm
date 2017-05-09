@@ -7,6 +7,7 @@ public class DontDestroyOnLoad : MonoBehaviour {
 
     void Awake()
     {
+        //keep go alive
         DontDestroyOnLoad(gameObject);
         Debug.Log("DontDestroyOnLoad: " + gameObject.name);
     }

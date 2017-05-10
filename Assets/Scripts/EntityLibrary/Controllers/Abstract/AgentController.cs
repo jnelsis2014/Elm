@@ -2,12 +2,21 @@
 
 public abstract class AgentController : MonoBehaviour
 {
+    public const string GLOBAL_NAME = "Agent Controller";
 
-    public int entityID
+    public int id
     {
         get
         {
             return GetInstanceID();
+        }
+    }
+
+    public string instanceName
+    {
+        get
+        {
+            return GLOBAL_NAME + " " + id;
         }
     }
 
@@ -21,7 +30,8 @@ public abstract class AgentController : MonoBehaviour
             }
             else
             {
-                Debug.Log("The controller " + entityID + " does not have an agent attached.");
+                Debug.Log(instanceName + "attempted to access the Agent script on its assigned GO," +
+                    " but no Agent was attached.");
                 return null;
             }
         }

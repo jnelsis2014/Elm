@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class AgentController : MonoBehaviour{
+public abstract class AgentController : MonoBehaviour
+{
 
-    public int controllerID
+    public int entityID
     {
         get
         {
@@ -22,7 +21,7 @@ public abstract class AgentController : MonoBehaviour{
             }
             else
             {
-                Debug.Log("The controller " + controllerID + " does not have an agent attached.");
+                Debug.Log("The controller " + entityID + " does not have an agent attached.");
                 return null;
             }
         }

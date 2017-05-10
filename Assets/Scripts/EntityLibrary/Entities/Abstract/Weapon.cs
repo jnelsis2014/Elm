@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class Weapon : Destructable , IHoldable {
+public abstract class Weapon : Destructable , IHoldable
+{
 
     public override string instanceName
     {

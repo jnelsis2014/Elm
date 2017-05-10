@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Arrow : Projectile {
+﻿public class Arrow : Projectile
+{
 
     private const string GLOBAL_NAME = "Arrow";
     public override string globalName

@@ -1,15 +1,60 @@
 ﻿using UnityEngine;
-using System.Collections;
-
 
 public class AutoTransparency : MonoBehaviour
 {
-    private Color _oldColor;
-    private Shader _oldShader;
-    private float _transparency = 0.3f;
-    private const float _targetTransparency = 0.3f;
-    private const float _fallOff = 0.1f; // returns to 100% in 0.1 sec
 
+    private Color _oldColor;
+    public Color OldColor
+    {
+        get
+        {
+            if (_oldColor != null)
+                return _oldColor;
+            else
+                return Color.white;
+        }
+    }
+
+    private Shader _oldShader;
+    public Shader OldShader
+    {
+        get
+        {
+            if (_oldShader != null)
+                return _oldShader;
+            else
+            {
+                return new Shader();
+            }
+        }
+    }
+
+    private float _transparency = 0.3f;
+    public float Transparency
+    {
+        get
+        {
+            return _transparency;
+        }
+    }
+
+    private const float _targetTransparency = 0.3f;
+    public static float TargetTransparency
+    {
+        get
+        {
+            return _targetTransparency;
+        }
+    }
+
+    private const float _fallOff = 0.1f; // returns to 100% in 0.1 sec
+    public static float FallOff
+    {
+        get
+        {
+            return _fallOff;
+        }
+    }
 
     public void BeTransparent()
     {
@@ -41,5 +86,4 @@ public class AutoTransparency : MonoBehaviour
         }
         _transparency += ((1.0f - _targetTransparency) * Time.deltaTime) / _fallOff;
     }
-
 }

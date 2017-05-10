@@ -1,17 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class AgentPoint : MountPoint {
-
-    public enum swingTypes
-    {
-        left,
-        right,
-        up,
-        down,
-        thrust
-    }
+public abstract class AgentPoint : MountPoint
+{
 
 	// Use this for initialization
 	void Start () {

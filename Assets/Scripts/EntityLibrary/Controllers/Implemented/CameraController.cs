@@ -125,11 +125,10 @@ public class CameraController : MonoBehaviour
     {
         _target = GameObject.FindGameObjectWithTag("player").transform;
     }
-
+    
     // Use this for initialization
     void Start()
     {
-        
         Vector3 angles = transform.eulerAngles;
         _x = angles.y;
         _y = angles.x;

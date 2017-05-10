@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public abstract class Projectile : Destructable {
+﻿public abstract class Projectile : Destructable
+{
 
 	// Use this for initialization
 	void Start () {

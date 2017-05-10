@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using BehaviorLibrary;
+﻿using BehaviorLibrary;
 using BehaviorLibrary.Components.Composites;
 using UnityEngine;
-using BehaviorLibrary.Components.Actions;
 
-public abstract class BaseEntity : MonoBehaviour {
+public abstract class BaseEntity : MonoBehaviour
+{
 
     public abstract string globalName
     {

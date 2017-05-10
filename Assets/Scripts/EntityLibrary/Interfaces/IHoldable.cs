@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public interface IHoldable : IInteractable {
+public interface IHoldable : IInteractable
+{
+
     void aim();
     void swing();
     void toss(Vector3 target);

@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DontDestroyOnLoad : MonoBehaviour {
-
+public class DontDestroyOnLoad : MonoBehaviour
+{
 
     void Awake()
     {

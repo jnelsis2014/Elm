@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Person : Agent {
+public class Person : Agent
+{
 
     public List<AgentPoint> agentPoints; //public convenience field for unity editor
     private List<AgentPoint> _agentPoints = new List<AgentPoint>(); //private field stores actual references to weapon positions

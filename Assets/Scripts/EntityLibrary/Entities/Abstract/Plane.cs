@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Plane : Constant {
+﻿public class Plane : Constant
+{
 
     private const string GLOBAL_NAME = "Plane";
     public override string globalName

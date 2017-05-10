@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public abstract class World : BaseEntity
+﻿public abstract class World : BaseEntity
 {
+
     // Use this for initialization
     void Start () {
 		

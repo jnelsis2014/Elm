@@ -1,16 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class PersonController : AgentController {
+public class PersonController : AgentController
+{
 
     public const float _MIN_JUMP_HORIZONTAL_V = 0;
     public const float _MAX_JUMP_HORIZONTAL_V = .5f;
     public const float _MIN_JUMP_CHARGE = 2.4f;
     public const float _MAX_JUMP_CHARGE = 5.4f; //max jump charge set velocity which produces a jump of
                                                 //around 1.77m. This is the highest a human has ever jumped.
-
     private CameraController _mainCamera;
+    public CameraController mainCamera
+    {
+        get
+        {
+            return _mainCamera;
+        }
+    }
 
     private float _jumpCharge;
     public float jumpCharge

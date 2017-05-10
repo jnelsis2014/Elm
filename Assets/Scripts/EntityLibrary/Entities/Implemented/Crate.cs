@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Crate : Destructable {
+﻿public class Crate : Destructable
+{
 
     public override string globalName
     {

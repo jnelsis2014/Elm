@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public abstract class MountPoint : Destructable {
-
+﻿public abstract class MountPoint : Destructable
+{
     public abstract IHoldable occupant
     {
         get;

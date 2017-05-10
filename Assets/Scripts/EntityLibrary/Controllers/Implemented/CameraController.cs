@@ -121,10 +121,15 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        _target = GameObject.FindGameObjectWithTag("player").transform;
+    }
+
     // Use this for initialization
     void Start()
     {
-        _target = GameObject.FindGameObjectWithTag("player").transform;
+        
         Vector3 angles = transform.eulerAngles;
         _x = angles.y;
         _y = angles.x;

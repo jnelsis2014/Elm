@@ -3,11 +3,18 @@
 public class PersonController : AgentController
 {
 
-    public const float _MIN_JUMP_HORIZONTAL_V = 0;
-    public const float _MAX_JUMP_HORIZONTAL_V = .5f;
-    public const float _MIN_JUMP_CHARGE = 2.4f;
-    public const float _MAX_JUMP_CHARGE = 5.4f; //max jump charge set velocity which produces a jump of
-                                                //around 1.77m. This is the highest a human has ever jumped.
+    public const float _MIN_JUMP_HORIZONTAL_V = 0;      //minumum value of the amount of velocity that may be applied
+                                                        //to the GO's RB while not grounded
+
+    public const float _MAX_JUMP_HORIZONTAL_V = .5f;    //maximum value of the amount of velocity that may be applied
+                                                        //to the GO's RB while not grounded
+
+    public const float _MIN_JUMP_CHARGE = 4.2f;         //minimum vertical velocity that is applied when the jump
+                                                        //button is pressed
+
+    public const float _MAX_JUMP_CHARGE = 6.2f;         //maximum vertical velocity that is applied when the jump
+                                                        //button is pressed
+
     private CameraController _mainCamera;
     public CameraController mainCamera
     {
@@ -88,9 +95,12 @@ public class PersonController : AgentController
                 Time.deltaTime * agent.mobility * agent.rotationOffset
             );
         }
-
-        getInputs();
 	}
+
+    public void FixedUpdate()
+    {
+        getInputs();
+    }
 
     private void getInputs()
     {
@@ -130,7 +140,7 @@ public class PersonController : AgentController
                 );
             }
 
-            if (isJumpDown)
+            if (isJumpHeld)
             {
                 chargeJump(.1f);
             }
@@ -209,11 +219,6 @@ public class PersonController : AgentController
         }
     }
 
-    private void FixedUpdate()
-    {
-
-    }
-
     private void applyVelocity(Vector3 myV)
     {
         Vector3 targetV = myV;
@@ -243,7 +248,7 @@ public class PersonController : AgentController
             _jumpCharge = _MIN_JUMP_CHARGE;
         }
         _jumpCharge += .01f + speed;
-        _jumpCharge = Mathf.Clamp(_jumpCharge, -_MAX_JUMP_CHARGE, _MAX_JUMP_CHARGE);
+        _jumpCharge = Mathf.Clamp(_jumpCharge, _MIN_JUMP_CHARGE, _MAX_JUMP_CHARGE);
         Debug.Log("Jump multiplier is " + _jumpCharge);
     }
 

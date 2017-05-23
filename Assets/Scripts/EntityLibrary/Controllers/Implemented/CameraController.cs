@@ -21,21 +21,21 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private Vector3 _targetOffset;
-    public Vector3 targetOffset
+    private float _horizontalOffset = 1f;
+    public float horizontallOffset
     {
         get
         {
-            return _targetOffset;
+            return _horizontalOffset;
         }
     }
 
-    private float _offset = 5f;
-    public float offset
+    private float _verticalOffset = 1f;
+    public float verticalOffset
     {
         get
         {
-            return _offset;
+            return _verticalOffset;
         }
     }
 
@@ -133,12 +133,6 @@ public class CameraController : MonoBehaviour
         _yaw = angles.y;
         _pitch = angles.x;
 
-        if (_target) 
-        {
-            _targetCenter = _target.transform.position; //store the camera targets position
-            _targetOffset = _target.right * _offset; //store the camera targets offset
-        }
-
         Cursor.lockState = CursorLockMode.Locked; //lock the cursor to enable mouse movement input without
                                                   //leaving the window
     }
@@ -203,7 +197,7 @@ public class CameraController : MonoBehaviour
             //place the target at the center of the forward vector of the new rotation
 
             transform.rotation = rotation; //assign the rotation to the camera
-            transform.position = position; //assign the position to the camera
+            transform.position = position + (transform.right * _horizontalOffset) + (transform.up * verticalOffset); //assign the position to the camera
         }
     }
 

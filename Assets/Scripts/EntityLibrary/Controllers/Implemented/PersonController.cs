@@ -101,6 +101,10 @@ public class PersonController : AgentController
     {
         if (agent.isPlayerControlled == true)
             getInputs();
+        else
+        {
+            
+        }
     }
 
     private void getInputs()

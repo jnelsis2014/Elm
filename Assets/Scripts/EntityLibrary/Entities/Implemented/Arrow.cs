@@ -26,11 +26,11 @@
         }
     }
 
-    public override float vDeltaMax
+    public override float speed
     {
         get
         {
-            return 30;
+            return 10;
         }
     }
 

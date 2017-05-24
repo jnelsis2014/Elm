@@ -27,6 +27,14 @@ public class Hand : AgentPoint
         }
     }
 
+    public override float speed
+    {
+        get
+        {
+            return 10;
+        }
+    }
+
     private IHoldable _occupant;
     public override IHoldable occupant
     {
@@ -41,14 +49,6 @@ public class Hand : AgentPoint
             else
                 Debug.Log(value.IInstanceName + " could not be placed in " + instanceName + " because " + instanceName + " is already occupied by "
                     + _occupant.IInstanceName + ".");
-        }
-    }
-
-    public override float vDeltaMax
-    {
-        get
-        {
-            return 10;
         }
     }
 

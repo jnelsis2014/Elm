@@ -22,9 +22,17 @@ public class Melee : Weapon, IHoldable
         }
     }
 
+    public override float speed
+    {
+        get
+        {
+            return 10;
+        }
+    }
+
     //IInteractable implemented properties
 
-    
+
 
     public override string IGlobalName
     {
@@ -70,12 +78,12 @@ public class Melee : Weapon, IHoldable
 
     public override void swing()
     {
-        rb.AddForce((holder.transform.forward - holder.transform.up)* 50, ForceMode.VelocityChange);
+        GetComponent<Rigidbody>().AddForce((holder.transform.forward - holder.transform.up)* 50, ForceMode.VelocityChange);
     }
 
     public override void toss(Vector3 target)
     {
-        rb.AddForce((target - transform.position) * 20, ForceMode.VelocityChange);
+        GetComponent<Rigidbody>().AddForce((target - transform.position) * 20, ForceMode.VelocityChange);
     }
     
     public override void pickUp(AgentPoint point)
@@ -95,7 +103,7 @@ public class Melee : Weapon, IHoldable
 
         holder = null;
         followTarget = null;
-        rb.useGravity = true;
+        GetComponent<Rigidbody>().useGravity = true;
     }
 
     public override void follow()
@@ -111,14 +119,14 @@ public class Melee : Weapon, IHoldable
             {
                 newVelocity =
                 (
-                    ((followTarget.transform.position - transform.position).normalized) * holder.mobility * 6
+                    ((followTarget.transform.position - transform.position).normalized) * holder.speed * 6
                 );
             }
             else //weapon is in the follow zone
             {
-                if (v != Vector3.zero)
+                if (GetComponent<Rigidbody>().velocity != Vector3.zero)
                 {
-                    newVelocity -= v / 2;
+                    newVelocity -= GetComponent<Rigidbody>().velocity / 2;
                     newAngularVelocity = GetComponent<Rigidbody>().angularVelocity / 2;
                 }
             }

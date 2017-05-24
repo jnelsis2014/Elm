@@ -99,7 +99,8 @@ public class PersonController : AgentController
 
     public void FixedUpdate()
     {
-        getInputs();
+        if (agent.isPlayerControlled == true)
+            getInputs();
     }
 
     private void getInputs()

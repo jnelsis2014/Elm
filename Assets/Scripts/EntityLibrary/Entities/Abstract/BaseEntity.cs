@@ -1,10 +1,4 @@
-﻿using BehaviorLibrary;
-using BehaviorLibrary.Components;
-using BehaviorLibrary.Components.Composites;
-using BehaviorLibrary.Components.Actions;
-using BehaviorLibrary.Components.Conditionals;
-using BehaviorLibrary.Components.Decorators;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class BaseEntity : MonoBehaviour
 {
@@ -135,27 +129,6 @@ public abstract class BaseEntity : MonoBehaviour
     public abstract float vDeltaMax
     {
         get;
-    }
-
-    EntityBehavior _behavior;
-    public EntityBehavior behavior
-    {
-        get
-        {
-            if (behavior != null)
-            {
-                return _behavior;
-            }
-            else
-            {
-                return null;
-                Debug.Log(instanceName + " has no assigned behavior.");
-            }
-        }
-        set
-        {
-            _behavior = value;
-        }
     }
 
     public Rigidbody rb

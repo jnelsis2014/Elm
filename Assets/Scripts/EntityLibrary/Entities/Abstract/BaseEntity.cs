@@ -30,19 +30,6 @@ public abstract class BaseEntity : MonoBehaviour
         }
     }
 
-    private bool _isTransparent;
-    public bool isTransparent
-    {
-        get
-        {
-            return _isTransparent;
-        }
-        set
-        {
-            _isTransparent = value;
-        }
-    }
-
     //is the bottom of an object touching a surface?
     public bool isGrounded
     {

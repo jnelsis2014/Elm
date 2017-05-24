@@ -24,14 +24,6 @@ public class Person : Agent
         }
     }
 
-    public override float vDeltaMax
-    {
-        get
-        {
-            return 10;
-        }
-    }
-
     public override bool isMutable
     {
         get
@@ -40,7 +32,7 @@ public class Person : Agent
         }
     }
 
-    public override float mobility
+    public override float speed
     {
         get
         {

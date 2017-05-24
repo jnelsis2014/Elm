@@ -22,11 +22,6 @@ public abstract class Agent : BaseEntity
         set;
     }
 
-    public abstract float mobility
-    {
-        get;
-    }
-
     public abstract float rotationOffset
     {
         get;

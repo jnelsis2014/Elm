@@ -1,4 +1,6 @@
-﻿public class Plane : Constant
+﻿using System;
+
+public class Plane : Constant
 {
 
     private const string GLOBAL_NAME = "Plane";
@@ -18,7 +20,7 @@
         }
     }
 
-    public override float vDeltaMax
+    public override float speed
     {
         get
         {

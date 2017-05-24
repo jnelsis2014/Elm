@@ -55,14 +55,6 @@ public abstract class Weapon : Destructable , IHoldable
         }
     }
 
-    public override float vDeltaMax
-    {
-        get
-        {
-            return 10;
-        }
-    }
-
     private float _minFollowDistance = 1; //default
     public float minFollowDistance
     {
@@ -118,8 +110,9 @@ public abstract class Weapon : Destructable , IHoldable
     public void OnCollisionEnter(Collision collision)
     {
         BaseEntity theEntity = collision.gameObject.GetComponent<BaseEntity>();
-        if (theEntity.rb != null && theEntity.tag != "player")
-            theEntity.rb.AddForceAtPosition(transform.forward + (theEntity.rb.mass * theEntity.rb.velocity), collision.transform.position, ForceMode.Force);
+        Rigidbody entityRB = theEntity.GetComponent<Rigidbody>();
+        if (entityRB != null && theEntity.tag != "player")
+            entityRB.AddForceAtPosition(transform.forward + (entityRB.mass * entityRB.velocity), collision.transform.position, ForceMode.Force);
         Debug.Log(instanceName + " collided with " + theEntity.instanceName);
     }
 

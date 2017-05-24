@@ -87,12 +87,12 @@ public class PersonController : AgentController
 	// Update is called once per frame
 	void Update () {
 
-        if (agent.v != Vector3.zero && agent.isGrounded)
+        if (agent.GetComponent<Rigidbody>().velocity != Vector3.zero && agent.isGrounded)
         {
             transform.rotation = Quaternion.RotateTowards
             (
-                transform.rotation, Quaternion.LookRotation(new Vector3(agent.v.x, 0, agent.v.z)),
-                Time.deltaTime * agent.mobility * agent.rotationOffset
+                transform.rotation, Quaternion.LookRotation(new Vector3(agent.GetComponent<Rigidbody>().velocity.x, 0, agent.GetComponent<Rigidbody>().velocity.z)),
+                Time.deltaTime * agent.speed * agent.rotationOffset
             );
         }
 	}
@@ -222,10 +222,10 @@ public class PersonController : AgentController
     private void applyVelocity(Vector3 myV)
     {
         Vector3 targetV = myV;
-        targetV *= agent.mobility;
-        Vector3 vDelta = targetV - agent.v;
-        vDelta.x = Mathf.Clamp(vDelta.x, -(agent.vDeltaMax), agent.vDeltaMax);
-        vDelta.z = Mathf.Clamp(vDelta.z, -(agent.vDeltaMax), agent.vDeltaMax);
+        targetV *= agent.speed;
+        Vector3 vDelta = targetV - agent.GetComponent<Rigidbody>().velocity;
+        vDelta.x = Mathf.Clamp(vDelta.x, -10, 10);
+        vDelta.z = Mathf.Clamp(vDelta.z, -10, 10);
         vDelta.y = 0;
         agent.addForce(vDelta, ForceMode.VelocityChange);
     }
@@ -233,10 +233,10 @@ public class PersonController : AgentController
     private void applyVelocity(Vector3 myV, Transform relativeTo)
     {
         Vector3 targetV = relativeTo.TransformDirection(myV);
-        targetV *= agent.mobility;
-        Vector3 vDelta = targetV - agent.v;
-        vDelta.x = Mathf.Clamp(vDelta.x, -(agent.vDeltaMax), agent.vDeltaMax);
-        vDelta.z = Mathf.Clamp(vDelta.z, -(agent.vDeltaMax), agent.vDeltaMax);
+        targetV *= agent.speed;
+        Vector3 vDelta = targetV - agent.GetComponent<Rigidbody>().velocity;
+        vDelta.x = Mathf.Clamp(vDelta.x, -(agent.speed), agent.speed);
+        vDelta.z = Mathf.Clamp(vDelta.z, -(agent.speed), agent.speed);
         vDelta.y = 0;
         agent.addForce(vDelta, ForceMode.VelocityChange);
     }

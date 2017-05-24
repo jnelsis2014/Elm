@@ -1,5 +1,9 @@
 ﻿using BehaviorLibrary;
+using BehaviorLibrary.Components;
 using BehaviorLibrary.Components.Composites;
+using BehaviorLibrary.Components.Actions;
+using BehaviorLibrary.Components.Conditionals;
+using BehaviorLibrary.Components.Decorators;
 using UnityEngine;
 
 public abstract class BaseEntity : MonoBehaviour
@@ -133,8 +137,8 @@ public abstract class BaseEntity : MonoBehaviour
         get;
     }
 
-    Behavior _behavior;
-    public Behavior behavior
+    EntityBehavior _behavior;
+    public EntityBehavior behavior
     {
         get
         {
@@ -144,9 +148,8 @@ public abstract class BaseEntity : MonoBehaviour
             }
             else
             {
-                RootSelector root = new RootSelector(empty);
-                _behavior = new Behavior(root);
-                return behavior;
+                return null;
+                Debug.Log(instanceName + " has no assigned behavior.");
             }
         }
         set
@@ -173,10 +176,19 @@ public abstract class BaseEntity : MonoBehaviour
 
     private void Awake()
     {
+        
+    }
+
+    private void Start()
+    {
 
     }
 
     // FixedUpdate is called right before the Physics engine updates.
+    private void Update()
+    {
+
+    }
     // Use Fixed Update for anything which adds a force to a BaseEntity.
     private void FixedUpdate()
     {

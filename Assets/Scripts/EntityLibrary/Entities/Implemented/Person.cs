@@ -87,21 +87,18 @@ public class Person : Agent
     {
         set
         {
-            if (isPlayerControlled == true)
+            _holdables.Add(value);
+
+            _inInteractionRange.Remove(value);
+
+            Debug.Log(value.IInstanceName + " was added to the weapons list of " + instanceName);
+            foreach (AgentPoint point in agentPoints)
             {
-                _holdables.Add(value);
-
-                _inInteractionRange.Remove(value);
-
-                Debug.Log(value.IInstanceName + " was added to the weapons list of " + instanceName);
-                foreach (AgentPoint point in agentPoints)
+                if (point.occupant == null)
                 {
-                    if (point.occupant == null)
-                    {
-                        point.occupant = value;
-                        value.pickUp(point);
-                        break;
-                    }
+                    point.occupant = value;
+                    value.pickUp(point);
+                    break;
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using FluentBehaviourTree;
+using UnityEngine;
 
 public class PersonController : AgentController
 {
@@ -51,6 +52,15 @@ public class PersonController : AgentController
         }
     }
 
+    private IBehaviourTreeNode _behaviourTree;
+    public IBehaviourTreeNode behaviourTree
+    {
+        get
+        {
+            return _behaviourTree;
+        }
+    }
+
     public void Awake()
     {
         if (Camera.main.GetComponent<CameraController>() != null)
@@ -81,8 +91,17 @@ public class PersonController : AgentController
 
 	// Use this for initialization
 	void Start () {
-
-	}
+        BehaviourTreeBuilder builder = new BehaviourTreeBuilder();
+        _behaviourTree = builder
+        .Sequence("wander")
+            .Do("rotateRandomly", t =>
+            {
+                agent.transform.Rotate(transform.up, 30);
+                return BehaviourTreeStatus.Success;
+            })
+        .End()
+        .Build();
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -103,7 +122,7 @@ public class PersonController : AgentController
             getInputs();
         else
         {
-            
+            _behaviourTree.Tick(new TimeData(Time.deltaTime));   
         }
     }
 

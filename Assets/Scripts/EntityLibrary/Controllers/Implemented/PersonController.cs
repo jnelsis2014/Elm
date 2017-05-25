@@ -1,5 +1,5 @@
-﻿using FluentBehaviourTree;
-using UnityEngine;
+﻿using UnityEngine;
+using FluentBehaviourTree;
 
 public class PersonController : AgentController
 {
@@ -93,12 +93,11 @@ public class PersonController : AgentController
 	void Start () {
         BehaviourTreeBuilder builder = new BehaviourTreeBuilder();
         _behaviourTree = builder
-        .Sequence("wander")
-            .Do("rotateRandomly", t =>
-            {
-                agent.transform.Rotate(transform.up, 30);
-                return BehaviourTreeStatus.Success;
-            })
+        .Selector("PackBehaviour")
+        .Sequence("Flock")
+        .Sequence("Attack")
+        .Sequence("Nest")
+        .Sequence("Socialize")
         .End()
         .Build();
     }
@@ -288,4 +287,6 @@ public class PersonController : AgentController
         agent.addForce(jumpVector, ForceMode.VelocityChange);
         _jumpCharge = _MIN_JUMP_CHARGE;
     }
+
+
 }

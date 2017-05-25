@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using FluentBehaviourTree;
+using UnityEngine;
 
 public abstract class AgentController : MonoBehaviour
 {

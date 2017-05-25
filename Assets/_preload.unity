@@ -277,6 +277,7 @@ GameObject:
   - component: {fileID: 289990053}
   - component: {fileID: 289990054}
   - component: {fileID: 289990056}
+  - component: {fileID: 289990055}
   m_Layer: 8
   m_Name: Player
   m_TagString: player
@@ -391,6 +392,18 @@ MonoBehaviour:
   agentPoints:
   - {fileID: 799374614}
   - {fileID: 623893456}
+--- !u!114 &289990055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 289990047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 385f609989ea91140bd80d1f450fd8f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementTarget: {x: 0, y: 0, z: 0}
 --- !u!135 &289990056
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1028,6 +1041,7 @@ GameObject:
   - component: {fileID: 1838072865}
   - component: {fileID: 1838072864}
   - component: {fileID: 1838072863}
+  - component: {fileID: 1838072871}
   m_Layer: 8
   m_Name: Person
   m_TagString: Untagged
@@ -1154,6 +1168,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1838072871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1838072862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 385f609989ea91140bd80d1f450fd8f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementTarget: {x: 0, y: 0, z: 0}
 --- !u!1 &1886141747
 GameObject:
   m_ObjectHideFlags: 0

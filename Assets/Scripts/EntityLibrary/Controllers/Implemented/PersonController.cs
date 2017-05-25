@@ -71,7 +71,7 @@ public class PersonController : AgentController
         {
             Debug.Log(_person.instanceName + "'s controller attempted to access the main cameras control script, but none was assigned.");
         }
-       
+
         if ((_person = GetComponent<Person>()) == null)
         {
             Debug.Log("Warning. You have attempted to attach a person controller to an object which does not have a "
@@ -89,15 +89,56 @@ public class PersonController : AgentController
             agent.isPlayerControlled = true;
     }
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start() {
         BehaviourTreeBuilder builder = new BehaviourTreeBuilder();
         _behaviourTree = builder
+        .Sequence("NotifyPackBehaviour")
+            .Do("Notify", t =>
+            {
+                Debug.Log(_person.instanceName + " is executing PackBehaviour");
+                return BehaviourTreeStatus.Success;
+            })
+        .End()
         .Selector("PackBehaviour")
-        .Sequence("Flock")
-        .Sequence("Attack")
-        .Sequence("Nest")
-        .Sequence("Socialize")
+            .Sequence("Flock")
+                .Condition("isAlone", t =>
+                {
+                    Debug.Log(_person.instanceName + " is looking for nearby people.");
+                    Collider[] adjacents = Physics.OverlapSphere(_person.transform.position, _person.blindDetectRadius);
+                    float distance = 0;
+                    foreach (Collider collider in adjacents)
+                    {
+                        if (collider.gameObject.GetComponent<Person>() != null)
+                        {
+                            Debug.Log(_person.instanceName + " detected a nearby person named " + collider.gameObject.GetComponent<Agent>().instanceName);
+                            if (Vector3.Distance(_person.transform.position, collider.gameObject.transform.position) > distance)
+                            {
+                                distance = Vector3.Distance(_person.transform.position, collider.gameObject.transform.position);
+                                GetComponent<PersonMemory>().movementTarget = collider.gameObject.transform.position;
+                            }
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                .Do("FlockWithLikeEntity", t =>
+                {
+                    if (Vector3.Distance(_person.transform.position, GetComponent<PersonMemory>().movementTarget) <= 3)
+                        return BehaviourTreeStatus.Success;
+                    else
+                    {
+                        applyVelocity(GetComponent<PersonMemory>().movementTarget - transform.position);
+                        return BehaviourTreeStatus.Running;
+                    }
+                })
+            .End()
+            .Sequence("Attack")
+            .End()
+            .Sequence("Nest")
+            .End()
+            .Sequence("Socialize")
+            .End()
         .End()
         .Build();
     }
@@ -287,6 +328,4 @@ public class PersonController : AgentController
         agent.addForce(jumpVector, ForceMode.VelocityChange);
         _jumpCharge = _MIN_JUMP_CHARGE;
     }
-
-
 }

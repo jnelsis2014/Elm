@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Person : Agent
@@ -45,6 +46,14 @@ public class Person : Agent
         get
         {
             return 40;
+        }
+    }
+
+    public override float blindDetectRadius
+    {
+        get
+        {
+            return 10f;
         }
     }
 

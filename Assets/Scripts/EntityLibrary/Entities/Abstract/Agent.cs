@@ -32,6 +32,11 @@ public abstract class Agent : BaseEntity
         get;
     }
 
+    public abstract float blindDetectRadius
+    {
+        get;
+    }
+
     public abstract void addForce(Vector3 force, ForceMode mode);
     public abstract void interact();
 }

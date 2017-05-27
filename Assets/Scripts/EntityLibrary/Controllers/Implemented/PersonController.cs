@@ -16,6 +16,15 @@ public class PersonController : AgentController
     public const float _MAX_JUMP_CHARGE = 6.2f;         //maximum vertical velocity that is applied when the jump
                                                         //button is pressed
 
+    private Collider[] _blindDetectedColliders;
+    public Collider[] blindDetectedColliders
+    {
+        get
+        {
+            return _blindDetectedColliders;
+        }
+    }
+
     private CameraController _mainCamera;
     public CameraController mainCamera
     {
@@ -91,6 +100,7 @@ public class PersonController : AgentController
 
     // Use this for initialization
     void Start() {
+        blindDetectColliders();
         BehaviourTreeBuilder builder = new BehaviourTreeBuilder();
         _behaviourTree = builder
         .Sequence("NotifyPackBehaviour")
@@ -105,31 +115,50 @@ public class PersonController : AgentController
                 .Condition("isAlone", t =>
                 {
                     Debug.Log(_person.instanceName + " is looking for nearby people.");
-                    Collider[] adjacents = Physics.OverlapSphere(_person.transform.position, _person.blindDetectRadius);
                     float distance = 0;
-                    foreach (Collider collider in adjacents)
+                    bool found = false;
+                    foreach (Collider collider in _blindDetectedColliders)
                     {
-                        if (collider.gameObject.GetComponent<Person>() != null)
+                        if (collider.gameObject.GetComponent<Person>() != null 
+                            && collider.gameObject != this.gameObject
+                            && collider.gameObject.tag != "player")
                         {
                             Debug.Log(_person.instanceName + " detected a nearby person named " + collider.gameObject.GetComponent<Agent>().instanceName);
                             if (Vector3.Distance(_person.transform.position, collider.gameObject.transform.position) > distance)
                             {
                                 distance = Vector3.Distance(_person.transform.position, collider.gameObject.transform.position);
                                 GetComponent<PersonMemory>().movementTarget = collider.gameObject.transform.position;
+                                found = true;
                             }
-                            return true;
                         }
                     }
-                    return false;
+                    if (found == true)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        GetComponent<PersonMemory>().movementTarget = transform.position;
+                        return false;
+                    }
                 })
                 .Do("FlockWithLikeEntity", t =>
                 {
-                    if (Vector3.Distance(_person.transform.position, GetComponent<PersonMemory>().movementTarget) <= 3)
+                    float distance = Vector3.Distance(_person.transform.position, GetComponent<PersonMemory>().movementTarget);
+                    if (distance >= 3 && distance <= _person.blindDetectRadius)
+                    {
+                        applyVelocity((GetComponent<PersonMemory>().movementTarget - transform.position).normalized);
+                        return BehaviourTreeStatus.Running;
+                    }
+                    else if (distance < 3)
+                    {
+                        _person.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
                         return BehaviourTreeStatus.Success;
+                    }
                     else
                     {
-                        applyVelocity(GetComponent<PersonMemory>().movementTarget - transform.position);
-                        return BehaviourTreeStatus.Running;
+                        _person.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
+                        return BehaviourTreeStatus.Success;
                     }
                 })
             .End()
@@ -158,6 +187,7 @@ public class PersonController : AgentController
 
     public void FixedUpdate()
     {
+        InvokeRepeating("blindDetectColliders", 1, 5);
         if (agent.isPlayerControlled == true)
             getInputs();
         else
@@ -327,5 +357,10 @@ public class PersonController : AgentController
 
         agent.addForce(jumpVector, ForceMode.VelocityChange);
         _jumpCharge = _MIN_JUMP_CHARGE;
+    }
+
+    private void blindDetectColliders()
+    {
+        _blindDetectedColliders = _person.blindDetectColliders();
     }
 }

@@ -251,4 +251,11 @@ public class Person : Agent
         }
         return result;
     }
+
+    public Collider[] blindDetectColliders()
+    {
+        Collider[] result = new Collider[0];
+        result = Physics.OverlapSphere(transform.position, blindDetectRadius);
+        return result;
+    }
 }

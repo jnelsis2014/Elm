@@ -140,8 +140,6 @@ public class Person : Agent
 
     private void Awake()
     {
-        GameManager.getGameManager().addAgent(this);
-
         foreach (AgentPoint agentPoint in agentPoints)
         {
             if (agentPoint != null)
@@ -164,7 +162,7 @@ public class Person : Agent
     // Use this for initialization
     void Start()
     {
-        
+        GameManager.getGameManager().addAgent(this);
     }
 
     // Update is called once per frame

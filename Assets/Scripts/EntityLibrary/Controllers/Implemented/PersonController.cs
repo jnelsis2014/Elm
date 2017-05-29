@@ -52,6 +52,15 @@ public class PersonController : AgentController
         }
     }
 
+    private PersonMemory _personMemory;
+    public PersonMemory personMemory
+    {
+        get
+        {
+            return _personMemory;
+        }
+    }
+
     private AgentPoint _activePoint;
     public AgentPoint activePoint
     {
@@ -85,6 +94,13 @@ public class PersonController : AgentController
         {
             Debug.Log("Warning. You have attempted to attach a person controller to an object which does not have a "
                 + " person script. Please attach a person script to this object or the controller will not " +
+                "function correctly");
+        }
+
+        if ((_personMemory = GetComponent<PersonMemory>()) == null)
+        {
+            Debug.Log("Warning. You have attempted to attach a person controller to an object which does not have a "
+                + " person memory script. Please attach a person memory script to this object or the controller will not " +
                 "function correctly");
         }
 
@@ -127,7 +143,7 @@ public class PersonController : AgentController
                             if (Vector3.Distance(_person.transform.position, collider.gameObject.transform.position) > distance)
                             {
                                 distance = Vector3.Distance(_person.transform.position, collider.gameObject.transform.position);
-                                GetComponent<PersonMemory>().movementTarget = collider.gameObject.transform.position;
+                                _personMemory.movementTarget = collider.gameObject.transform.position;
                                 found = true;
                             }
                         }
@@ -138,16 +154,16 @@ public class PersonController : AgentController
                     }
                     else
                     {
-                        GetComponent<PersonMemory>().movementTarget = transform.position;
+                        _personMemory.movementTarget = transform.position;
                         return false;
                     }
                 })
                 .Do("FlockWithLikeEntity", t =>
                 {
-                    float distance = Vector3.Distance(_person.transform.position, GetComponent<PersonMemory>().movementTarget);
+                    float distance = Vector3.Distance(_person.transform.position, _personMemory.movementTarget);
                     if (distance >= 3 && distance <= _person.blindDetectRadius)
                     {
-                        applyVelocity((GetComponent<PersonMemory>().movementTarget - transform.position).normalized);
+                        applyVelocity((_personMemory.movementTarget - transform.position).normalized);
                         return BehaviourTreeStatus.Running;
                     }
                     else if (distance < 3)
@@ -362,5 +378,20 @@ public class PersonController : AgentController
     private void blindDetectColliders()
     {
         _blindDetectedColliders = _person.blindDetectColliders();
+    }
+
+    private Vector3 getSeekVector(Vector3 target, float speed)
+    {
+        return _person.getSeekVector(target, speed);
+    }
+
+    private Vector3 getFleeVector(Vector3 target, float speed)
+    {
+        return _person.getFleeVector(target, speed);
+    }
+
+    private Vector3 getArriveVector(Vector3 target, float deceleration, float offset)
+    {
+        return _person.getArriveVector(target, deceleration, offset);
     }
 }

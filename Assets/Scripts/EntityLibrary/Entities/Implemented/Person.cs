@@ -258,4 +258,33 @@ public class Person : Agent
         result = Physics.OverlapSphere(transform.position, blindDetectRadius);
         return result;
     }
+
+    public Vector3 getSeekVector(Vector3 target, float speed)
+    {
+        Vector3 result = (target - transform.position).normalized * speed;
+        return result;
+    }
+
+    public Vector3 getFleeVector(Vector3 target, float speed)
+    {
+        Vector3 result = (transform.position - target).normalized * speed;
+        return result;
+    }
+
+    public Vector3 getArriveVector(Vector3 target, float deceleration, float offset)
+    {
+        float targetDistance = Vector3.Distance(target, transform.position);
+
+        if (targetDistance > 0)
+        {
+            Vector3 targetVector = (target - transform.position).normalized;
+            float speed = (targetDistance / deceleration) * offset;
+            Vector3 result = targetVector * speed;
+            return result;
+        }
+        else
+        {
+            return new Vector3(0, 0, 0);
+        }
+    }
 }

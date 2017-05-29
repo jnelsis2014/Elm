@@ -9,6 +9,7 @@ TagManager:
   - neutral
   - hostile
   - CST
+  - game_manager
   layers:
   - Default
   - TransparentFX

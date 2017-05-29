@@ -53,7 +53,7 @@ public class Person : Agent
     {
         get
         {
-            return 10f;
+            return 20f;
         }
     }
 
@@ -140,6 +140,8 @@ public class Person : Agent
 
     private void Awake()
     {
+        GameManager.getGameManager().addAgent(this);
+
         foreach (AgentPoint agentPoint in agentPoints)
         {
             if (agentPoint != null)
@@ -162,13 +164,18 @@ public class Person : Agent
     // Use this for initialization
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.getGameManager().removeAgent(this);
     }
 
     public override void addForce(Vector3 force, ForceMode mode)
@@ -252,10 +259,102 @@ public class Person : Agent
         return result;
     }
 
-    public Collider[] blindDetectColliders()
+    public List<Agent> blindDetectAgents()
     {
-        Collider[] result = new Collider[0];
-        result = Physics.OverlapSphere(transform.position, blindDetectRadius);
+        List<Agent> result = new List<Agent>();
+        foreach (Agent agent in GameManager.getGameManager().agents)
+        {
+            if (agent != this)
+            {
+                float distanceSqr = (agent.transform.position - transform.position).sqrMagnitude;
+                if (distanceSqr <= blindDetectRadius)
+                    result.Add(agent);
+            }
+        }
+        return result;
+    }
+
+    public Vector3 getFlockAlignment()
+    {
+        Vector3 result = this.GetComponent<Rigidbody>().velocity;
+        int neighborCount = 0;
+        foreach (Agent agent in blindDetectAgents())
+        {
+            result += agent.GetComponent<Rigidbody>().velocity;
+            neighborCount++;
+        }
+
+        if (neighborCount == 0)
+            return this.GetComponent<Rigidbody>().velocity;
+
+        result /= neighborCount;
+        result = result.normalized;
+
+        return result;
+    }
+
+    public Vector3 getFlockCohesion()
+    {
+        Vector3 result = this.GetComponent<Rigidbody>().velocity;
+        int neighborCount = 0;
+        foreach (Agent agent in blindDetectAgents())
+        {
+            result += agent.transform.position;
+            neighborCount++;
+        }
+
+        if (neighborCount == 0)
+            return this.GetComponent<Rigidbody>().velocity;
+
+        result /= neighborCount;
+        result = (result - this.transform.position);
+        result = result.normalized;
+
+        return result;
+    }
+
+    public Vector3 getFlockSeparation()
+    {
+        Vector3 result = this.GetComponent<Rigidbody>().velocity;
+        int neighborCount = 0;
+        foreach (Agent agent in blindDetectAgents())
+        {
+            result += agent.transform.position;
+            neighborCount++;
+        }
+
+        if (neighborCount == 0)
+            return this.GetComponent<Rigidbody>().velocity;
+
+        result /= neighborCount;
+        result = result - this.transform.position;
+        result = result * -1;
+        result = result.normalized;
+
+        return result;
+    }
+
+    public Vector3 getFlockingVector()
+    {
+        Vector3 result = this.GetComponent<Rigidbody>().velocity;
+        Vector3 alignment = getFlockAlignment();
+        Vector3 cohesion = getFlockCohesion();
+        Vector3 separation = getFlockSeparation();
+
+        result = alignment + cohesion + separation;
+        result = result.normalized;
+        return result;
+    }
+
+    public Vector3 getFlockingVector(Vector3 aWeight, Vector3 cWeight, Vector3 sWeight)
+    {
+        Vector3 result;
+        Vector3 alignment = getFlockAlignment() + aWeight;
+        Vector3 cohesion = getFlockCohesion() + cWeight;
+        Vector3 separation = getFlockSeparation() + sWeight;
+
+        result = alignment + cohesion + separation;
+        result = result.normalized;
         return result;
     }
 

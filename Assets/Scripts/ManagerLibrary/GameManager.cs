@@ -3,7 +3,14 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 
-    public List<Agent> agents;
+    public List<Agent> _agents;
+    public List<Agent> agents
+    {
+        get
+        {
+            return _agents;
+        }
+    }
 
 	// Use this for initialization
 	void Start () {
@@ -12,19 +19,17 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        agents = updateAgents();
+
 	}
 
-    private List<Agent> updateAgents()
+    public void addAgent(Agent agent)
     {
-        List<Agent> result = new List<Agent>();
+        _agents.Add(agent);
+    }
 
-        foreach (Agent agent in FindObjectsOfType<Agent>())
-        {
-            result.Add(agent);
-        }
-
-        return result;
+    public void removeAgent(Agent agent)
+    {
+        _agents.Remove(agent);
     }
 
     public static GameManager getGameManager()

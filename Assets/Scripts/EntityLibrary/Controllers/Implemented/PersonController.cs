@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using FluentBehaviourTree;
+using System.Collections.Generic;
 
 public class PersonController : AgentController
 {
@@ -16,12 +17,12 @@ public class PersonController : AgentController
     public const float _MAX_JUMP_CHARGE = 6.2f;         //maximum vertical velocity that is applied when the jump
                                                         //button is pressed
 
-    private Collider[] _blindDetectedColliders;
-    public Collider[] blindDetectedColliders
+    public List<Agent> _blindDetectedAgents;
+    public List<Agent> blindDetectedAgents
     {
         get
         {
-            return _blindDetectedColliders;
+            return _blindDetectedAgents;
         }
     }
 
@@ -131,21 +132,14 @@ public class PersonController : AgentController
                 .Condition("isAlone", t =>
                 {
                     Debug.Log(_person.instanceName + " is looking for nearby people.");
-                    float distance = 0;
                     bool found = false;
-                    foreach (Collider collider in _blindDetectedColliders)
+                    foreach (Agent agent in _person.blindDetectAgents())
                     {
-                        if (collider.gameObject.GetComponent<Person>() != null 
-                            && collider.gameObject != this.gameObject
-                            && collider.gameObject.tag != "player")
+                        if (agent != null && agent.tag != "player")
                         {
-                            Debug.Log(_person.instanceName + " detected a nearby person named " + collider.gameObject.GetComponent<Agent>().instanceName);
-                            if (Vector3.Distance(_person.transform.position, collider.gameObject.transform.position) > distance)
-                            {
-                                distance = Vector3.Distance(_person.transform.position, collider.gameObject.transform.position);
-                                _personMemory.movementTarget = collider.gameObject.transform.position;
-                                found = true;
-                            }
+                            //use alignment, cohesion, and separation to flock with nearby agents.
+                            Debug.Log(_person.instanceName + " detected a nearby person named " + agent.instanceName);
+                            found = true;
                         }
                     }
                     if (found == true)
@@ -160,22 +154,8 @@ public class PersonController : AgentController
                 })
                 .Do("FlockWithLikeEntity", t =>
                 {
-                    float distance = Vector3.Distance(_person.transform.position, _personMemory.movementTarget);
-                    if (distance >= 3 && distance <= _person.blindDetectRadius)
-                    {
-                        applyVelocity((_personMemory.movementTarget - transform.position).normalized);
-                        return BehaviourTreeStatus.Running;
-                    }
-                    else if (distance < 3)
-                    {
-                        _person.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
-                        return BehaviourTreeStatus.Success;
-                    }
-                    else
-                    {
-                        _person.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
-                        return BehaviourTreeStatus.Success;
-                    }
+                    applyVelocity(getFlockingVector());
+                    return BehaviourTreeStatus.Success;
                 })
             .End()
             .Sequence("Attack")
@@ -377,7 +357,17 @@ public class PersonController : AgentController
 
     private void blindDetectColliders()
     {
-        _blindDetectedColliders = _person.blindDetectColliders();
+        _blindDetectedAgents = _person.blindDetectAgents();
+    }
+
+    private Vector3 getFlockingVector()
+    {
+        return _person.getFlockingVector();
+    }
+
+    private Vector3 getFlockingVector(Vector3 aWeight, Vector3 cWeight, Vector3 sWeight)
+    {
+        return _person.getFlockingVector(aWeight, cWeight, sWeight);
     }
 
     private Vector3 getSeekVector(Vector3 target, float speed)

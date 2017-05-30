@@ -149,6 +149,20 @@ public class PersonController : AgentController
                         return BehaviourTreeStatus.Running;
                     }
                 })
+                .Sequence("AvoidObstacle")
+                .Condition("ObstacleDetected", t =>
+                {
+                    if (_person.closestObstacle != null)
+                    {
+                        return true;
+                    }
+                    return false;
+                })
+                .Do("AvoidObstacle", t =>
+                {
+                    applyVelocity(_person.getObstacleAvoidanceVector());
+                    return BehaviourTreeStatus.Success;
+                })
             .End()
             .Sequence("Flock")
                 .Condition("IsNotAlone", t =>
@@ -162,6 +176,20 @@ public class PersonController : AgentController
                 .Do("FlockWithLikeEntity", t =>
                 {
                     applyVelocity(getFlockingVector());
+                    return BehaviourTreeStatus.Success;
+                })
+                .Sequence("AvoidObstacle")
+                .Condition("ObstacleDetected", t =>
+                {
+                    if (_person.closestObstacle != null)
+                    {
+                        return true;
+                    }
+                    return false;
+                })
+                .Do("AvoidObstacle", t =>
+                {
+                    applyVelocity(_person.getObstacleAvoidanceVector());
                     return BehaviourTreeStatus.Success;
                 })
             .End()

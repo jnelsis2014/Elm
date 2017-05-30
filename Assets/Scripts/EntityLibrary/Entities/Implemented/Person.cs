@@ -61,7 +61,7 @@ public class Person : Agent
     {
         get
         {
-            return 2f;
+            return GetComponent<SphereCollider>().radius;
         }
     }
 
@@ -69,8 +69,8 @@ public class Person : Agent
     {
         get
         {
-            float detectDistanceOffset = 5;
-            return GetComponent<Rigidbody>().velocity.z/speed * 5;
+            float detectDistanceOffset = 5f;
+            return GetComponent<Rigidbody>().velocity.z/10 * detectDistanceOffset;
         }
     }
 
@@ -83,7 +83,7 @@ public class Person : Agent
         }
     }
 
-    private Obstacle _closestObstacle;
+    public Obstacle _closestObstacle;
     public override Obstacle closestObstacle
     {
         get
@@ -329,14 +329,15 @@ public class Person : Agent
         {
             if (hit.collider.GetComponent<Obstacle>() != null)
             {
+                Debug.Log("Obstacle detected" + hit.collider.GetComponent<Obstacle>().instanceName);
                 _obstacleDistance = hit.distance;
                 _closestObstacle = hit.collider.GetComponent<Obstacle>();
             }
-               
         }
         else
         {
-            _obstacleDistance = -1;
+            _obstacleDistance = 0;
+            _closestObstacle = null;
         }
     }
 
@@ -455,9 +456,13 @@ public class Person : Agent
 
     public Vector3 getObstacleAvoidanceVector()
     {
-        float multiplier = 1 + (obstacleDetectDistance - obstacleDistance) / obstacleDetectDistance;
+        float multiplier = 1f + (obstacleDetectDistance - transform.InverseTransformPoint(_closestObstacle.transform.position).z) / obstacleDetectDistance;
 
-        Vector3 result = (_closestObstacle
+        float avoidanceX = (_closestObstacle.radius - closestObstacle.transform.position.x) * multiplier;
+        float avoidanceZ = (_closestObstacle.radius - closestObstacle.transform.position.z) * multiplier; ;
+
+        Vector3 result = new Vector3(avoidanceX, 0, avoidanceZ) * speed;
+        return result;
     }
 
     public Vector3 getWanderPoint(float wDistance)

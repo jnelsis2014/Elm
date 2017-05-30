@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour {
         foreach (Agent agent in agents)
         {
             agent.updateBlindDetectedAgents();
-            agent.updateForwardDetectedObstacles();
+            agent.updateObstacleDistance();
         }
 	}
 

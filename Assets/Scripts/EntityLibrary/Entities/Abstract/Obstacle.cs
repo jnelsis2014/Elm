@@ -10,7 +10,7 @@ public abstract class Obstacle : Constant {
     {
         get
         {
-            return radius;
+            return Mathf.Min(GetComponent<CapsuleCollider>().bounds.extents.x, GetComponent<CapsuleCollider>().bounds.extents.z);
         }
     }
 	// Use this for initialization

@@ -17,15 +17,6 @@ public class PersonController : AgentController
     public const float _MAX_JUMP_CHARGE = 6.2f;         //maximum vertical velocity that is applied when the jump
                                                         //button is pressed
 
-    public List<Agent> _blindDetectedAgents;
-    public List<Agent> blindDetectedAgents
-    {
-        get
-        {
-            return _blindDetectedAgents;
-        }
-    }
-
     private CameraController _mainCamera;
     public CameraController mainCamera
     {
@@ -68,6 +59,15 @@ public class PersonController : AgentController
         get
         {
             return _activePoint;
+        }
+    }
+
+    private Vector3 _movementTarget;
+    public Vector3 movementTarget
+    {
+        get
+        {
+            return _movementTarget;
         }
     }
 
@@ -117,7 +117,7 @@ public class PersonController : AgentController
 
     // Use this for initialization
     void Start() {
-        blindDetectColliders();
+        _movementTarget = transform.position;
         BehaviourTreeBuilder builder = new BehaviourTreeBuilder();
         _behaviourTree = builder
         .Sequence("NotifyPackBehaviour")
@@ -128,29 +128,35 @@ public class PersonController : AgentController
             })
         .End()
         .Selector("PackBehaviour")
-            .Sequence("Flock")
-                .Condition("isAlone", t =>
+            .Sequence("SearchForLikeEntities")
+                .Condition("IsAlone", t =>
                 {
-                    Debug.Log(_person.instanceName + " is looking for nearby people.");
-                    bool found = false;
-                    foreach (Agent agent in _person.blindDetectAgents())
+                    if (_person.blindDetectedAgents.Count > 0)
                     {
-                        if (agent != null && agent.tag != "player")
-                        {
-                            //use alignment, cohesion, and separation to flock with nearby agents.
-                            Debug.Log(_person.instanceName + " detected a nearby person named " + agent.instanceName);
-                            found = true;
-                        }
+                        return false;
                     }
-                    if (found == true)
+                    return true;
+                })
+                .Do("RandomWander", t =>
+                {
+                    if (_movementTarget == transform.position)
                     {
-                        return true;
+                        _movementTarget = _person.getWanderPoint(1, 5, 1);
+                        return BehaviourTreeStatus.Success;
                     }
                     else
                     {
-                        _personMemory.movementTarget = transform.position;
-                        return false;
+                        return BehaviourTreeStatus.Running;
                     }
+                })
+            .Sequence("Flock")
+                .Condition("IsNotAlone", t =>
+                {
+                    if (_person.blindDetectedAgents.Count > 0)
+                    {
+                        return true;
+                    }
+                    return false;
                 })
                 .Do("FlockWithLikeEntity", t =>
                 {
@@ -170,6 +176,17 @@ public class PersonController : AgentController
 	
 	// Update is called once per frame
 	void Update () {
+	}
+
+    public void FixedUpdate()
+    {
+        if (agent.isPlayerControlled == true)
+            getInputs();
+        else
+        {
+            _behaviourTree.Tick(new TimeData(Time.deltaTime));
+            applyVelocity(_person.getSeekVector(_movementTarget, _person.speed));
+        }
 
         if (agent.GetComponent<Rigidbody>().velocity != Vector3.zero && agent.isGrounded)
         {
@@ -178,17 +195,6 @@ public class PersonController : AgentController
                 transform.rotation, Quaternion.LookRotation(new Vector3(agent.GetComponent<Rigidbody>().velocity.x, 0, agent.GetComponent<Rigidbody>().velocity.z)),
                 Time.deltaTime * agent.speed * agent.rotationOffset
             );
-        }
-	}
-
-    public void FixedUpdate()
-    {
-        InvokeRepeating("blindDetectColliders", 1, 5);
-        if (agent.isPlayerControlled == true)
-            getInputs();
-        else
-        {
-            _behaviourTree.Tick(new TimeData(Time.deltaTime));   
         }
     }
 
@@ -353,11 +359,6 @@ public class PersonController : AgentController
 
         agent.addForce(jumpVector, ForceMode.VelocityChange);
         _jumpCharge = _MIN_JUMP_CHARGE;
-    }
-
-    private void blindDetectColliders()
-    {
-        _blindDetectedAgents = _person.blindDetectAgents();
     }
 
     private Vector3 getFlockingVector()

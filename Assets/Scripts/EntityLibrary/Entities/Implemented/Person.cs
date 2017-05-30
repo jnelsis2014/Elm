@@ -53,7 +53,16 @@ public class Person : Agent
     {
         get
         {
-            return 20f;
+            return 10f;
+        }
+    }
+
+    public List<Agent> _blindDetectedAgents = new List<Agent>();
+    public List<Agent> blindDetectedAgents
+    {
+        get
+        {
+            return _blindDetectedAgents;
         }
     }
 
@@ -257,26 +266,26 @@ public class Person : Agent
         return result;
     }
 
-    public List<Agent> blindDetectAgents()
-    {
-        List<Agent> result = new List<Agent>();
+    public void updateBlindDetectedAgents()
+    { 
         foreach (Agent agent in GameManager.getGameManager().agents)
         {
             if (agent != this)
             {
                 float distanceSqr = (agent.transform.position - transform.position).sqrMagnitude;
                 if (distanceSqr <= blindDetectRadius)
-                    result.Add(agent);
+                    _blindDetectedAgents.Add(agent);
+                else
+                    _blindDetectedAgents.Remove(agent);
             }
         }
-        return result;
     }
 
     public Vector3 getFlockAlignment()
     {
         Vector3 result = this.GetComponent<Rigidbody>().velocity;
         int neighborCount = 0;
-        foreach (Agent agent in blindDetectAgents())
+        foreach (Agent agent in _blindDetectedAgents)
         {
             result += agent.GetComponent<Rigidbody>().velocity;
             neighborCount++;
@@ -295,7 +304,7 @@ public class Person : Agent
     {
         Vector3 result = this.GetComponent<Rigidbody>().velocity;
         int neighborCount = 0;
-        foreach (Agent agent in blindDetectAgents())
+        foreach (Agent agent in _blindDetectedAgents)
         {
             result += agent.transform.position;
             neighborCount++;
@@ -315,7 +324,7 @@ public class Person : Agent
     {
         Vector3 result = this.GetComponent<Rigidbody>().velocity;
         int neighborCount = 0;
-        foreach (Agent agent in blindDetectAgents())
+        foreach (Agent agent in _blindDetectedAgents)
         {
             result += agent.transform.position;
             neighborCount++;
@@ -383,5 +392,15 @@ public class Person : Agent
         {
             return new Vector3(0, 0, 0);
         }
+    }
+
+    public Vector3 getWanderPoint(float wRadius, float wDistance, float wJitter)
+    {
+        Vector3 wTarget = UnityEngine.Random.insideUnitSphere;
+        wTarget.y = 0;
+        wTarget = wTarget.normalized;
+        wTarget *= wRadius;
+        wTarget = (transform.forward * wDistance) + wTarget;
+        return wTarget;
     }
 }

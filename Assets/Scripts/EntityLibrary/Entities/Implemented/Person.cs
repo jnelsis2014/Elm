@@ -37,7 +37,7 @@ public class Person : Agent
     {
         get
         {
-            return 10;
+            return 5;
         }
     }
 
@@ -365,42 +365,40 @@ public class Person : Agent
         return result;
     }
 
-    public Vector3 getSeekVector(Vector3 target, float speed)
+    public Vector3 getSeekVector(Vector3 target)
     {
         Vector3 result = (target - transform.position).normalized * speed;
         return result;
     }
 
-    public Vector3 getFleeVector(Vector3 target, float speed)
+    public Vector3 getFleeVector(Vector3 target)
     {
         Vector3 result = (transform.position - target).normalized * speed;
         return result;
     }
 
-    public Vector3 getArriveVector(Vector3 target, float deceleration, float offset)
+    public Vector3 getArriveVector(Vector3 target, float deceleration)
     {
-        float targetDistance = Vector3.Distance(target, transform.position);
+        Vector3 result = GetComponent<Rigidbody>().velocity;
+        Vector3 toTarget = (target - transform.position).normalized;
+        float distance = Vector3.Distance(target, transform.position);
 
-        if (targetDistance > 0)
+        if (distance > 0)
         {
-            Vector3 targetVector = (target - transform.position).normalized;
-            float speed = (targetDistance / deceleration) * offset;
-            Vector3 result = targetVector * speed;
-            return result;
+            float dOffset = .3f;
+            float dSpeed = distance / (deceleration * dOffset);
+            dSpeed = Mathf.Min(dSpeed, speed);
+            result = toTarget * dSpeed;
+            return result;        
         }
-        else
-        {
-            return new Vector3(0, 0, 0);
-        }
+        return Vector3.zero;
     }
 
-    public Vector3 getWanderPoint(float wRadius, float wDistance, float wJitter)
+    public Vector3 getWanderPoint(float wDistance)
     {
-        Vector3 wTarget = UnityEngine.Random.insideUnitSphere;
+        Vector3 wTarget = UnityEngine.Random.insideUnitSphere * wDistance;
         wTarget.y = 0;
-        wTarget = wTarget.normalized;
-        wTarget *= wRadius;
-        wTarget = (transform.forward * wDistance) + wTarget;
+        wTarget += transform.position;
         return wTarget;
     }
 }

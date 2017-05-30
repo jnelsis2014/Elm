@@ -139,9 +139,9 @@ public class PersonController : AgentController
                 })
                 .Do("RandomWander", t =>
                 {
-                    if (_movementTarget == transform.position)
+                    if (Vector3.Distance(movementTarget, transform.position) < 1)
                     {
-                        _movementTarget = _person.getWanderPoint(1, 5, 1);
+                        _movementTarget = _person.getWanderPoint(10);
                         return BehaviourTreeStatus.Success;
                     }
                     else
@@ -185,7 +185,7 @@ public class PersonController : AgentController
         else
         {
             _behaviourTree.Tick(new TimeData(Time.deltaTime));
-            applyVelocity(_person.getSeekVector(_movementTarget, _person.speed));
+            applyVelocity(_person.getArriveVector(_movementTarget, 2));
         }
 
         if (agent.GetComponent<Rigidbody>().velocity != Vector3.zero && agent.isGrounded)
@@ -318,23 +318,23 @@ public class PersonController : AgentController
     private void applyVelocity(Vector3 myV)
     {
         Vector3 targetV = myV;
-        targetV *= agent.speed;
+        targetV *= _person.speed;
         Vector3 vDelta = targetV - agent.GetComponent<Rigidbody>().velocity;
         vDelta.x = Mathf.Clamp(vDelta.x, -10, 10);
         vDelta.z = Mathf.Clamp(vDelta.z, -10, 10);
         vDelta.y = 0;
-        agent.addForce(vDelta, ForceMode.VelocityChange);
+        _person.addForce(vDelta, ForceMode.VelocityChange);
     }
 
     private void applyVelocity(Vector3 myV, Transform relativeTo)
     {
         Vector3 targetV = relativeTo.TransformDirection(myV);
-        targetV *= agent.speed;
+        targetV *= _person.speed;
         Vector3 vDelta = targetV - agent.GetComponent<Rigidbody>().velocity;
         vDelta.x = Mathf.Clamp(vDelta.x, -(agent.speed), agent.speed);
         vDelta.z = Mathf.Clamp(vDelta.z, -(agent.speed), agent.speed);
         vDelta.y = 0;
-        agent.addForce(vDelta, ForceMode.VelocityChange);
+        _person.addForce(vDelta, ForceMode.VelocityChange);
     }
 
     private void chargeJump(float speed)
@@ -373,16 +373,16 @@ public class PersonController : AgentController
 
     private Vector3 getSeekVector(Vector3 target, float speed)
     {
-        return _person.getSeekVector(target, speed);
+        return _person.getSeekVector(target);
     }
 
     private Vector3 getFleeVector(Vector3 target, float speed)
     {
-        return _person.getFleeVector(target, speed);
+        return _person.getFleeVector(target);
     }
 
     private Vector3 getArriveVector(Vector3 target, float deceleration, float offset)
     {
-        return _person.getArriveVector(target, deceleration, offset);
+        return _person.getArriveVector(target, deceleration);
     }
 }

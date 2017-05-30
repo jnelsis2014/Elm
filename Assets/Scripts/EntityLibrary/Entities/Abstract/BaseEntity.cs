@@ -30,9 +30,4 @@ public abstract class BaseEntity : MonoBehaviour
             return Physics.Raycast(transform.position, -Vector3.up, transform.localScale.y + .01f);
         }
     }
-
-    public abstract float speed
-    {
-        get;
-    }
 }

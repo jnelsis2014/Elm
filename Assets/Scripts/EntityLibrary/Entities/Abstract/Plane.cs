@@ -20,14 +20,6 @@ public class Plane : Constant
         }
     }
 
-    public override float speed
-    {
-        get
-        {
-            return 0;
-        }
-    }
-
     // Use this for initialization
     void Start () {
 		

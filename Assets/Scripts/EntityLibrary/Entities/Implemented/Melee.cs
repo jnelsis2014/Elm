@@ -22,14 +22,6 @@ public class Melee : Weapon, IHoldable
         }
     }
 
-    public override float speed
-    {
-        get
-        {
-            return 10;
-        }
-    }
-
     //IInteractable implemented properties
 
 

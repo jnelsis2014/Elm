@@ -25,14 +25,6 @@
         }
     }
 
-    public override float speed
-    {
-        get
-        {
-            return 10;
-        }
-    }
-
     // Use this for initialization
     void Start () {
 		

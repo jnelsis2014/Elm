@@ -53,7 +53,42 @@ public class Person : Agent
     {
         get
         {
-            return 10f;
+            return 40f;
+        }
+    }
+
+    public override float obstacleDetectRadius
+    {
+        get
+        {
+            return 2f;
+        }
+    }
+
+    public override float obstacleDetectDistance
+    {
+        get
+        {
+            float detectDistanceOffset = 5;
+            return GetComponent<Rigidbody>().velocity.z/speed * 5;
+        }
+    }
+
+    private float _obstacleDistance;
+    public override float obstacleDistance
+    {
+        get
+        {
+            return _obstacleDistance;
+        }
+    }
+
+    private Obstacle _closestObstacle;
+    public override Obstacle closestObstacle
+    {
+        get
+        {
+            return _closestObstacle;
         }
     }
 
@@ -266,7 +301,7 @@ public class Person : Agent
         return result;
     }
 
-    public void updateBlindDetectedAgents()
+    public override void updateBlindDetectedAgents()
     { 
         foreach (Agent agent in GameManager.getGameManager().agents)
         {
@@ -274,10 +309,34 @@ public class Person : Agent
             {
                 float distanceSqr = (agent.transform.position - transform.position).sqrMagnitude;
                 if (distanceSqr <= blindDetectRadius)
-                    _blindDetectedAgents.Add(agent);
+                {
+                    if (!(_blindDetectedAgents.Contains(agent)))
+                    {
+                        _blindDetectedAgents.Add(agent);
+                    }
+                }
                 else
                     _blindDetectedAgents.Remove(agent);
             }
+        }
+    }
+
+    public override void updateObstacleDistance()
+    {
+        RaycastHit hit;
+
+        if (Physics.SphereCast(transform.position, obstacleDetectRadius, transform.forward, out hit, obstacleDetectDistance))
+        {
+            if (hit.collider.GetComponent<Obstacle>() != null)
+            {
+                _obstacleDistance = hit.distance;
+                _closestObstacle = hit.collider.GetComponent<Obstacle>();
+            }
+               
+        }
+        else
+        {
+            _obstacleDistance = -1;
         }
     }
 
@@ -349,19 +408,19 @@ public class Person : Agent
         Vector3 separation = getFlockSeparation();
 
         result = alignment + cohesion + separation;
-        result = result.normalized;
+        result = result.normalized * speed;
         return result;
     }
 
     public Vector3 getFlockingVector(Vector3 aWeight, Vector3 cWeight, Vector3 sWeight)
     {
-        Vector3 result;
+        Vector3 result = this.GetComponent<Rigidbody>().velocity;
         Vector3 alignment = getFlockAlignment() + aWeight;
         Vector3 cohesion = getFlockCohesion() + cWeight;
         Vector3 separation = getFlockSeparation() + sWeight;
 
-        result = alignment + cohesion + separation;
-        result = result.normalized;
+        result += alignment + cohesion + separation;
+        result = result.normalized * speed;
         return result;
     }
 
@@ -379,7 +438,7 @@ public class Person : Agent
 
     public Vector3 getArriveVector(Vector3 target, float deceleration)
     {
-        Vector3 result = GetComponent<Rigidbody>().velocity;
+        Vector3 result = transform.position;
         Vector3 toTarget = (target - transform.position).normalized;
         float distance = Vector3.Distance(target, transform.position);
 
@@ -392,6 +451,13 @@ public class Person : Agent
             return result;        
         }
         return Vector3.zero;
+    }
+
+    public Vector3 getObstacleAvoidanceVector()
+    {
+        float multiplier = 1 + (obstacleDetectDistance - obstacleDistance) / obstacleDetectDistance;
+
+        Vector3 result = (_closestObstacle
     }
 
     public Vector3 getWanderPoint(float wDistance)

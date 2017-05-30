@@ -37,6 +37,34 @@ public abstract class Agent : BaseEntity
         get;
     }
 
+    public abstract float speed
+    {
+        get;
+    }
+
+    public abstract float obstacleDetectRadius
+    {
+        get;
+    }
+
+    public abstract float obstacleDetectDistance
+    {
+        get;
+    }
+
+    public abstract float obstacleDistance
+    {
+        get;
+    }
+
+    public abstract Obstacle closestObstacle
+    {
+        get;
+    }
+
+    public abstract void updateBlindDetectedAgents();
+    public abstract void updateObstacleDistance();
+
     public abstract void addForce(Vector3 force, ForceMode mode);
     public abstract void interact();
 }

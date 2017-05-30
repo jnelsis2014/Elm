@@ -27,14 +27,6 @@ public class Hand : AgentPoint
         }
     }
 
-    public override float speed
-    {
-        get
-        {
-            return 10;
-        }
-    }
-
     private IHoldable _occupant;
     public override IHoldable occupant
     {

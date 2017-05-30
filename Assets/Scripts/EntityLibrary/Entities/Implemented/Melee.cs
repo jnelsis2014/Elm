@@ -111,7 +111,7 @@ public class Melee : Weapon, IHoldable
             {
                 newVelocity =
                 (
-                    ((followTarget.transform.position - transform.position).normalized) * holder.speed * 6
+                    ((followTarget.transform.position - transform.position).normalized) * holder.maxSpeed * 6
                 );
             }
             else //weapon is in the follow zone

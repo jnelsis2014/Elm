@@ -88,7 +88,7 @@ public class PersonController : AgentController
         }
         else
         {
-            Debug.Log(_person.instanceName + "'s controller attempted to access the main cameras control script, but none was assigned.");
+            Debug.Log(agent.instanceName + "'s controller attempted to access the main cameras control script, but none was assigned.");
         }
 
         if ((_person = GetComponent<Person>()) == null)
@@ -110,9 +110,9 @@ public class PersonController : AgentController
             _activePoint = person.getOccupiedPoint();
         }
 
-        _person.GetComponent<Rigidbody>().freezeRotation = true;
+        agent.GetComponent<Rigidbody>().freezeRotation = true;
         if (tag == "player")
-            _person.isPlayerControlled = true;
+            agent.isPlayerControlled = true;
     }
 
     // Use this for initialization
@@ -120,85 +120,9 @@ public class PersonController : AgentController
         _movementTarget = transform.position;
         BehaviourTreeBuilder builder = new BehaviourTreeBuilder();
         _behaviourTree = builder
-        .Sequence("NotifyPackBehaviour")
-            .Do("Notify", t =>
-            {
-                return BehaviourTreeStatus.Success;
-            })
-        .End()
-        .Selector("PackBehaviour")
-            .Sequence("SearchForLikeEntities")
-                .Condition("IsAlone", t =>
-                {
-                    if (_person.blindDetectedAgents.Count > 0)
-                    {
-                        return false;
-                    }
-                    return true;
-                })
-                .Do("RandomWander", t =>
-                {
-                    if (Vector3.Distance(movementTarget, transform.position) < 1)
-                    {
-                        _movementTarget = _person.getWanderPoint(10);
-                        return BehaviourTreeStatus.Success;
-                    }
-                    else
-                    {
-                        applyVelocity(getArriveVector(_movementTarget, 2));
-                        return BehaviourTreeStatus.Running;
-                    }
-                })
-                .Sequence("AvoidObstacle")
-                .Condition("ObstacleDetected", t =>
-                {
-                    if (_person.closestObstacle != null)
-                    {
-                        return true;
-                    }
-                    return false;
-                })
-                .Do("AvoidObstacle", t =>
-                {
-                    applyVelocity(_person.getObstacleAvoidanceVector());
-                    return BehaviourTreeStatus.Success;
-                })
-            .End()
-            .Sequence("Flock")
-                .Condition("IsNotAlone", t =>
-                {
-                    if (_person.blindDetectedAgents.Count > 0)
-                    {
-                        return true;
-                    }
-                    return false;
-                })
-                .Do("FlockWithLikeEntity", t =>
-                {
-                    applyVelocity(getFlockingVector());
-                    return BehaviourTreeStatus.Success;
-                })
-                .Sequence("AvoidObstacle")
-                .Condition("ObstacleDetected", t =>
-                {
-                    if (_person.closestObstacle != null)
-                    {
-                        return true;
-                    }
-                    return false;
-                })
-                .Do("AvoidObstacle", t =>
-                {
-                    applyVelocity(_person.getObstacleAvoidanceVector());
-                    return BehaviourTreeStatus.Success;
-                })
-            .End()
-            .Sequence("Attack")
-            .End()
-            .Sequence("Nest")
-            .End()
-            .Sequence("Socialize")
-            .End()
+        .Selector("PersonBehavior")
+            .Do("AvoidObstacle", t => avoidObstacle())
+            .Do("WanderRandomly", t => wander())
         .End()
         .Build();
     }
@@ -209,19 +133,19 @@ public class PersonController : AgentController
 
     public void FixedUpdate()
     {
-        if (_person.isPlayerControlled == true)
+        if (agent.isPlayerControlled == true)
             getInputs();
         else
         {
             _behaviourTree.Tick(new TimeData(Time.deltaTime));   
         }
 
-        if (_person.GetComponent<Rigidbody>().velocity != Vector3.zero && _person.isGrounded)
+        if (agent.GetComponent<Rigidbody>().velocity != Vector3.zero && agent.isGrounded)
         {
             transform.rotation = Quaternion.RotateTowards
             (
-                transform.rotation, Quaternion.LookRotation(new Vector3(_person.GetComponent<Rigidbody>().velocity.x, 0, _person.GetComponent<Rigidbody>().velocity.z)),
-                Time.deltaTime * _person.speed * _person.rotationOffset
+                transform.rotation, Quaternion.LookRotation(new Vector3(agent.GetComponent<Rigidbody>().velocity.x, 0, agent.GetComponent<Rigidbody>().velocity.z)),
+                Time.deltaTime * agent.maxSpeed * agent.rotationOffset
             );
         }
     }
@@ -252,14 +176,14 @@ public class PersonController : AgentController
         bool isLockHeld = Input.GetKeyUp(KeyCode.Q);
         bool isLockUp = Input.GetKeyUp(KeyCode.Q);
 
-        if (_person.isPlayerControlled == true)
+        if (agent.isPlayerControlled == true)
         {
             //movement
-            if (_person.isGrounded)
+            if (agent.isGrounded)
             {
                 applyVelocity
                 (
-                    movementVelocity * _person.speed,
+                    movementVelocity * agent.maxSpeed,
                     cameraTransform
                 );
             }
@@ -268,7 +192,7 @@ public class PersonController : AgentController
             {
                 chargeJump(.1f);
             }
-            else if (isJumpUp && _person.isGrounded)
+            else if (isJumpUp && agent.isGrounded)
             {
                 applyJumpVelocity(_jumpCharge);
             }
@@ -346,30 +270,30 @@ public class PersonController : AgentController
     private void applyVelocity(Vector3 myV)
     {
         Vector3 targetV = myV;
-        Vector3 vDelta = targetV - _person.GetComponent<Rigidbody>().velocity;
-        vDelta.x = Mathf.Clamp(vDelta.x, -10, 10);
-        vDelta.z = Mathf.Clamp(vDelta.z, -10, 10);
+        Vector3 vDelta = targetV - agent.GetComponent<Rigidbody>().velocity;
+        vDelta.x = Mathf.Clamp(vDelta.x, -agent.maxSpeed, person.maxSpeed);
+        vDelta.z = Mathf.Clamp(vDelta.z, -agent.maxSpeed, person.maxSpeed);
         vDelta.y = 0;
-        _person.addForce(vDelta, ForceMode.VelocityChange);
+        agent.addForce(vDelta, ForceMode.VelocityChange);
     }
 
     private void applyVelocity(Vector3 myV, Transform relativeTo)
     {
         Vector3 targetV = relativeTo.TransformDirection(myV);
-        Vector3 vDelta = targetV - _person.GetComponent<Rigidbody>().velocity;
-        vDelta.x = Mathf.Clamp(vDelta.x, -(_person.speed), _person.speed);
-        vDelta.z = Mathf.Clamp(vDelta.z, -(_person.speed), _person.speed);
+        Vector3 vDelta = targetV - agent.GetComponent<Rigidbody>().velocity;
+        vDelta.x = Mathf.Clamp(vDelta.x, -(agent.maxSpeed), agent.maxSpeed);
+        vDelta.z = Mathf.Clamp(vDelta.z, -(agent.maxSpeed), agent.maxSpeed);
         vDelta.y = 0;
-        _person.addForce(vDelta, ForceMode.VelocityChange);
+        agent.addForce(vDelta, ForceMode.VelocityChange);
     }
 
-    private void chargeJump(float speed)
+    private void chargeJump(float chargeSpeed)
     {
         if (_jumpCharge < _MIN_JUMP_CHARGE)
         {
             _jumpCharge = _MIN_JUMP_CHARGE;
         }
-        _jumpCharge += .01f + speed;
+        _jumpCharge += .01f + chargeSpeed;
         _jumpCharge = Mathf.Clamp(_jumpCharge, _MIN_JUMP_CHARGE, _MAX_JUMP_CHARGE);
         Debug.Log("Jump multiplier is " + _jumpCharge);
     }
@@ -379,36 +303,63 @@ public class PersonController : AgentController
         Vector3 jumpVector = new Vector3
         (
             Mathf.Clamp(Input.GetAxis("Horizontal"), _MIN_JUMP_HORIZONTAL_V, _MAX_JUMP_HORIZONTAL_V),
-            _person.transform.up.y * velocity,
+            agent.transform.up.y * velocity,
             Mathf.Clamp(Input.GetAxis("Vertical"), _MIN_JUMP_HORIZONTAL_V, _MAX_JUMP_HORIZONTAL_V)
         );
 
-        _person.addForce(jumpVector, ForceMode.VelocityChange);
+        agent.addForce(jumpVector, ForceMode.VelocityChange);
         _jumpCharge = _MIN_JUMP_CHARGE;
     }
 
     private Vector3 getFlockingVector()
     {
-        return _person.getFlockingVector();
+        return agent.getFlockingVector();
     }
 
     private Vector3 getFlockingVector(Vector3 aWeight, Vector3 cWeight, Vector3 sWeight)
     {
-        return _person.getFlockingVector(aWeight, cWeight, sWeight);
+        return agent.getFlockingVector(aWeight, cWeight, sWeight);
     }
 
-    private Vector3 getSeekVector(Vector3 target, float speed)
+    //behavior tree methods
+    public bool obstacleAhead()
     {
-        return _person.getSeekVector(target);
+        return agent.hasObstacle();
     }
 
-    private Vector3 getFleeVector(Vector3 target, float speed)
+    public bool agentsNearby()
     {
-        return _person.getFleeVector(target);
+        return agent.hasNearbyAgents();
     }
 
-    private Vector3 getArriveVector(Vector3 target, float deceleration)
+    public BehaviourTreeStatus avoidObstacle()
     {
-        return _person.getArriveVector(target, deceleration);
+        if (obstacleAhead())
+        {
+            applyVelocity(agent.getObstacleAvoidanceVector());
+            return BehaviourTreeStatus.Success;
+        }
+        else
+            return BehaviourTreeStatus.Failure;
+    }
+
+    public BehaviourTreeStatus wander()
+    {
+        if (Vector3.Distance(transform.position, _movementTarget) < 1f)
+        {
+            _movementTarget = agent.getWanderPoint(10);
+            return BehaviourTreeStatus.Success;
+        }
+        else
+        {
+            if (agent.closestObstacle != null)
+            {
+                _movementTarget = transform.position;
+                applyVelocity(agent.getObstacleAvoidanceVector());
+                return BehaviourTreeStatus.Failure;
+            }
+            applyVelocity(agent.getArriveVector(_movementTarget, 2));
+            return BehaviourTreeStatus.Running;
+        }
     }
 }

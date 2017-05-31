@@ -140,6 +140,22 @@ public class Person : Agent
         }
     }
 
+    public override float minObstacleDetectDistance
+    {
+        get
+        {
+            return 2.5f;
+        }
+    }
+
+    public override float obstacleDetectWidth
+    {
+        get
+        {
+            return GetComponent<CapsuleCollider>().bounds.extents.x;
+        }
+    }
+
     private void Awake()
     {
         foreach (AgentPoint agentPoint in agentPoints)

@@ -77,20 +77,22 @@ public abstract class Agent : BaseEntity
         }
     }
 
+    public abstract float minObstacleDetectDistance
+    {
+        get;
+    }
+
     public float obstacleDetectDistance
     {
         get
         {
-            return 2f;
+            return minObstacleDetectDistance + (GetComponent<Rigidbody>().velocity.z / maxSpeed) * minObstacleDetectDistance;
         }
     }
 
-    public float obstacleDetectWidth
+    public abstract float obstacleDetectWidth
     {
-        get
-        {
-            return 2f;
-        }
+        get;
     }
 
     public void updateBlindDetectedAgents()

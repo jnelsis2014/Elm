@@ -336,7 +336,6 @@ public class PersonController : AgentController
     {
         if (obstacleAhead())
         {
-            applyVelocity(agent.getObstacleAvoidanceVector());
             return BehaviourTreeStatus.Success;
         }
         else
@@ -352,12 +351,6 @@ public class PersonController : AgentController
         }
         else
         {
-            if (agent.closestObstacle != null)
-            {
-                _movementTarget = transform.position;
-                applyVelocity(agent.getObstacleAvoidanceVector());
-                return BehaviourTreeStatus.Failure;
-            }
             applyVelocity(agent.getArriveVector(_movementTarget, 2));
             return BehaviourTreeStatus.Running;
         }

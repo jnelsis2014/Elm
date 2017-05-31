@@ -55,6 +55,15 @@ public abstract class Agent : BaseEntity
         }
     }
 
+    public List<Obstacle> _localObstacles;
+    public List<Obstacle> localObstacles
+    {
+        get
+        {
+            return _localObstacles;
+        }
+    }
+
     public abstract float maxSpeed
     {
         get;
@@ -72,26 +81,15 @@ public abstract class Agent : BaseEntity
     {
         get
         {
-            float minDetectDistance = 2f;
-            return minDetectDistance + ((GetComponent<Rigidbody>().velocity.z/maxSpeed) * minDetectDistance);
+            return 2f;
         }
     }
 
-    private float _obstacleDistance;
-    public float obstacleDistance
+    public float obstacleDetectWidth
     {
         get
         {
-            return _obstacleDistance;
-        }
-    }
-
-    public Obstacle _closestObstacle;
-    public Obstacle closestObstacle
-    {
-        get
-        {
-            return _closestObstacle;
+            return 2f;
         }
     }
 
@@ -233,35 +231,21 @@ public abstract class Agent : BaseEntity
     }
 
     //obstacle avoidance behaviors
-    public void updateObstacleDistance()
+    public void updateLocalObstacles()
     {
-        RaycastHit hit;
-
-        if (Physics.SphereCast(transform.position, obstacleDetectRadius, transform.forward, out hit, obstacleDetectDistance))
+        foreach (Obstacle obstacle in GameManager.getGameManager().obstacles)
         {
-            if (hit.collider.GetComponent<Obstacle>() != null)
+            Vector3 localObsPos = transform.InverseTransformPoint(obstacle.transform.position);
+            //Debug.Log(instanceName + " is checking " + obstacle.instanceName + " at LP " + localObsPos + " and GP " + obstacle.transform.position + " for intersections with its OAA");
+            if (((localObsPos.z - obstacle.radius) < obstacleDetectDistance) //if the objects bounds do not lie outside the obstacle detection radius
+            && (localObsPos.z >= 0) //if the obstacle is not behind the agent
+            && (obstacle.radius + (obstacleDetectWidth / 2) > Mathf.Abs(localObsPos.x))) //if the obstacles avoidance buffer is outside of the detection width
             {
-                Debug.Log("Obstacle detected" + hit.collider.GetComponent<Obstacle>().instanceName);
-                _obstacleDistance = hit.distance;
-                _closestObstacle = hit.collider.GetComponent<Obstacle>();
+                localObstacles.Add(obstacle);
+                Debug.Log(instanceName + " detected " + obstacle.instanceName + " intersecting at LP " + localObsPos + "and GP " + obstacle.transform.position);
             }
         }
-        else
-        {
-            _obstacleDistance = 0;
-            _closestObstacle = null;
-        }
-    }
-
-    public Vector3 getObstacleAvoidanceVector()
-    {
-        float multiplier = 1f + (obstacleDetectDistance/Vector3.Distance(transform.position, _closestObstacle.transform.position));
-
-        float avoidanceX = (_closestObstacle.radius - closestObstacle.transform.position.x) * multiplier;
-        float avoidanceZ = (_closestObstacle.radius - closestObstacle.transform.position.z) * multiplier;
-
-        Vector3 result = new Vector3(avoidanceX, transform.position.y, avoidanceZ) * maxSpeed;
-        return result;
+        _localObstacles = localObstacles;
     }
 
     public Vector3 getWanderPoint(float wDistance)
@@ -275,13 +259,13 @@ public abstract class Agent : BaseEntity
     //behavior methods
     public bool hasObstacle()
     {
-        if (_closestObstacle != null)
+        if (_localObstacles.Count > 0)
         {
             return true;
         }
         return false;
     }
-
+    
     public bool hasNearbyAgents()
     {
         if (_blindDetectedAgents != null)

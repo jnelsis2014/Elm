@@ -12,6 +12,15 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public List<Obstacle> _obstacles;
+    public List<Obstacle> obstacles
+    {
+        get
+        {
+            return _obstacles;
+        }
+    }
+
 	// Use this for initialization
 	void Start () {
 		
@@ -23,7 +32,7 @@ public class GameManager : MonoBehaviour {
         foreach (Agent agent in agents)
         {
             agent.updateBlindDetectedAgents();
-            agent.updateObstacleDistance();
+            agent.updateLocalObstacles();
         }
 	}
 

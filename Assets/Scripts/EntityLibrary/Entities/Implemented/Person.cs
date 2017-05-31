@@ -45,7 +45,7 @@ public class Person : Agent
     {
         get
         {
-            return 40;
+            return 80;
         }
     }
 
@@ -153,6 +153,14 @@ public class Person : Agent
         get
         {
             return GetComponent<CapsuleCollider>().bounds.extents.x;
+        }
+    }
+
+    public override double brakingWeight
+    {
+        get
+        {
+            return .2d;
         }
     }
 

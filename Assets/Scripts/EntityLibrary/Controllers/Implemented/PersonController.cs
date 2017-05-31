@@ -336,15 +336,22 @@ public class PersonController : AgentController
     {
         if (obstacleAhead())
         {
-            return BehaviourTreeStatus.Success;
+            applyVelocity(agent.getObstacleAvoidanceVector());
+            return BehaviourTreeStatus.Running;
         }
         else
+        {
             return BehaviourTreeStatus.Failure;
+        }
     }
 
     public BehaviourTreeStatus wander()
     {
-        if (Vector3.Distance(transform.position, _movementTarget) < 1f)
+        if (agent.localObstacles.Count > 0)
+        {
+            return BehaviourTreeStatus.Failure;
+        }
+        else if (Vector3.Distance(transform.position, _movementTarget) < 1f)
         {
             _movementTarget = agent.getWanderPoint(10);
             return BehaviourTreeStatus.Success;

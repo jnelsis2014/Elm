@@ -82,6 +82,11 @@ public abstract class Agent : BaseEntity
         get;
     }
 
+    public abstract double brakingWeight
+    {
+        get;
+    }
+
     public float obstacleDetectDistance
     {
         get
@@ -248,6 +253,34 @@ public abstract class Agent : BaseEntity
             }
         }
         _localObstacles = localObstacles;
+    }
+
+    public Vector3 getObstacleAvoidanceVector()
+    {
+        Obstacle closest = null;
+        float distanceToClosest = 0;
+
+        foreach (Obstacle obstacle in _localObstacles)
+        {
+            if (closest != null && Vector3.Distance(closest.transform.position, obstacle.transform.position) < distanceToClosest)
+            {
+                closest = obstacle;
+            }
+            else
+            {
+                closest = obstacle;
+            }
+        }
+
+        Vector3 localPosClosest = transform.InverseTransformPoint(closest.transform.position);
+
+        double multiplier = 1.0 + (obstacleDetectDistance - localPosClosest.z) / obstacleDetectDistance;
+
+        double steeringForceX = (closest.radius - localPosClosest.x) * multiplier;
+        double steeringForceZ = (closest.radius - localPosClosest.z) * brakingWeight;
+
+        Vector3 result = new Vector3((float)steeringForceX, 0, (float)steeringForceZ);
+        return result;
     }
 
     public Vector3 getWanderPoint(float wDistance)

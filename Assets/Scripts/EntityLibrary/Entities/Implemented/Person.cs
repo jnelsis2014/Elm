@@ -140,11 +140,16 @@ public class Person : Agent
         }
     }
 
+    private float _minObstacleDetectDistance;
     public override float minObstacleDetectDistance
     {
         get
         {
-            return 2.5f;
+            return _minObstacleDetectDistance;
+        }
+        set
+        {
+            _minObstacleDetectDistance = value;
         }
     }
 

@@ -121,7 +121,6 @@ public class PersonController : AgentController
         BehaviourTreeBuilder builder = new BehaviourTreeBuilder();
         _behaviourTree = builder
         .Selector("PersonBehavior")
-            .Do("AvoidObstacle", t => avoidObstacle())
             .Do("WanderRandomly", t => wander())
         .End()
         .Build();
@@ -332,33 +331,23 @@ public class PersonController : AgentController
         return agent.hasNearbyAgents();
     }
 
-    public BehaviourTreeStatus avoidObstacle()
-    {
-        if (obstacleAhead())
-        {
-            applyVelocity(agent.getObstacleAvoidanceVector());
-            return BehaviourTreeStatus.Running;
-        }
-        else
-        {
-            return BehaviourTreeStatus.Failure;
-        }
-    }
-
     public BehaviourTreeStatus wander()
     {
-        if (agent.localObstacles.Count > 0)
-        {
-            return BehaviourTreeStatus.Failure;
-        }
-        else if (Vector3.Distance(transform.position, _movementTarget) < 1f)
+        if (Vector3.Distance(transform.position, _movementTarget) < 1f)
         {
             _movementTarget = agent.getWanderPoint(10);
+            agent.minObstacleDetectDistance = Vector3.Distance(transform.position, _movementTarget);
             return BehaviourTreeStatus.Success;
         }
         else
         {
-            applyVelocity(agent.getArriveVector(_movementTarget, 2));
+            if (obstacleAhead())
+            {
+                applyVelocity(agent.getObstacleAvoidanceVector());
+                _movementTarget = transform.position;
+            }
+            else
+                applyVelocity(agent.getArriveVector(_movementTarget, 2)); 
             return BehaviourTreeStatus.Running;
         }
     }

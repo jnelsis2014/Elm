@@ -80,6 +80,7 @@ public abstract class Agent : BaseEntity
     public abstract float minObstacleDetectDistance
     {
         get;
+        set;
     }
 
     public abstract double brakingWeight
@@ -240,19 +241,21 @@ public abstract class Agent : BaseEntity
     //obstacle avoidance behaviors
     public void updateLocalObstacles()
     {
+        List<Obstacle> theLocalObstacles = new List<Obstacle>();
         foreach (Obstacle obstacle in GameManager.getGameManager().obstacles)
         {
             Vector3 localObsPos = transform.InverseTransformPoint(obstacle.transform.position);
+            
             //Debug.Log(instanceName + " is checking " + obstacle.instanceName + " at LP " + localObsPos + " and GP " + obstacle.transform.position + " for intersections with its OAA");
             if (((localObsPos.z - obstacle.radius) < obstacleDetectDistance) //if the objects bounds do not lie outside the obstacle detection radius
             && (localObsPos.z >= 0) //if the obstacle is not behind the agent
             && (obstacle.radius + (obstacleDetectWidth / 2) > Mathf.Abs(localObsPos.x))) //if the obstacles avoidance buffer is outside of the detection width
             {
-                localObstacles.Add(obstacle);
+                theLocalObstacles.Add(obstacle);
                 Debug.Log(instanceName + " detected " + obstacle.instanceName + " intersecting at LP " + localObsPos + "and GP " + obstacle.transform.position);
             }
         }
-        _localObstacles = localObstacles;
+        _localObstacles = theLocalObstacles;
     }
 
     public Vector3 getObstacleAvoidanceVector()

@@ -30,6 +30,15 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public List<Wall> _walls;
+    public List<Walls> walls
+    {
+        get
+        {
+            return _walls;
+        }
+    }
+
 	// Use this for initialization
 	void Start () {
 		

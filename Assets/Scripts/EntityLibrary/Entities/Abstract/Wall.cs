@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boundary : MonoBehaviour {
+public abstract class Wall : Constant {
 
 	// Use this for initialization
 	void Start () {

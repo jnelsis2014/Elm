@@ -56,6 +56,18 @@ public class SteeringBehaviours : MonoBehaviour
     public string obstacleAvoidanceTag;
     public Vector3 steeringForce;
 
+    // Use this for initialization
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
     float theta = Random.Range(0, 1) * Mathf.PI * 2;
 
     public Vector3 wanderTarget
@@ -113,6 +125,7 @@ public class SteeringBehaviours : MonoBehaviour
     {
         float magnitudeSoFar = runningTotal.magnitude;
         float magnitudeRemaining = movingEntity.maxForce - magnitudeSoFar;
+
         if (magnitudeRemaining <= 0f)
             return false;
 
@@ -121,6 +134,10 @@ public class SteeringBehaviours : MonoBehaviour
         if (magnitudeToAdd < magnitudeRemaining)
         {
             runningTotal += forceToAdd;
+        }
+        else
+        {
+            runningTotal += (forceToAdd.normalized * magnitudeRemaining);
         }
 
         return true;
@@ -135,6 +152,12 @@ public class SteeringBehaviours : MonoBehaviour
     public Vector3 calculatePrioritized()
     {
         Vector3 force = Vector3.zero;
+
+        if (wallAvoidanceOn)
+        {
+            
+        }
+
         return steeringForce;
     }
 
@@ -143,15 +166,7 @@ public class SteeringBehaviours : MonoBehaviour
         Vector3 force = Vector3.zero;
         return steeringForce;
     }
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
-    }
+    
 
     private Vector3 seek(Vector3 targetPos)
     {
@@ -319,5 +334,11 @@ public class SteeringBehaviours : MonoBehaviour
         }
 
         return transform.TransformPoint(steeringForce);
+    }
+
+    public Vector3 wallAvoidance(List<Wall> walls)
+    {
+        Vector3 result = Vector3.zero;
+        return result;
     }
 }

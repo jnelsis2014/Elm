@@ -119,7 +119,8 @@ public class Person : MovingEntity
     {
         get
         {
-            return Mathf.Infinity;        }
+            return Mathf.Infinity;
+        }
 
         set
         {

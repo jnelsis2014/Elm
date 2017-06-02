@@ -17,6 +17,10 @@ public class PersonController : MovingEntityController
     public const float _MAX_JUMP_CHARGE = 6.2f;         //maximum vertical velocity that is applied when the jump
                                                         //button is pressed
 
+    private Vector3 steeringForce = Vector3.zero;
+
+    public SteeringBehaviours steeringBehaviour;
+
     private CameraController _mainCamera;
     public CameraController mainCamera
     {
@@ -135,7 +139,9 @@ public class PersonController : MovingEntityController
             getInputs();
         else
         {
-            _behaviourTree.Tick(new TimeData(Time.deltaTime));   
+            steeringForce = steeringBehaviour.calculate();
+            Debug.Log(movingEntity.instanceName + "'s steeringForce is " + steeringForce);
+            applyVelocity(steeringForce);
         }
 
         if (movingEntity.GetComponent<Rigidbody>().velocity != Vector3.zero && movingEntity.isGrounded)
@@ -177,7 +183,7 @@ public class PersonController : MovingEntityController
             {
                 applyVelocity
                 (
-                    movementVelocity * movingEntity.maxSpeed,
+                    movementVelocity * .3f,
                     cameraTransform
                 );
             }
@@ -261,24 +267,17 @@ public class PersonController : MovingEntityController
         }
     }
 
-    private void applyVelocity(Vector3 myV)
-    {
-        Vector3 targetV = myV;
-        Vector3 vDelta = targetV - movingEntity.GetComponent<Rigidbody>().velocity;
-        vDelta.x = Mathf.Clamp(vDelta.x, -movingEntity.maxSpeed, movingEntity.maxSpeed);
-        vDelta.z = Mathf.Clamp(vDelta.z, -movingEntity.maxSpeed, movingEntity.maxSpeed);
-        vDelta.y = 0;
-        movingEntity.addForce(vDelta, ForceMode.VelocityChange);
+    private void applyVelocity(Vector3 velocity)
+    { 
+        velocity.y = 0;
+        movingEntity.addForce(velocity, ForceMode.VelocityChange);
     }
 
-    private void applyVelocity(Vector3 myV, Transform relativeTo)
+    private void applyVelocity(Vector3 velocity, Transform relativeTo)
     {
-        Vector3 targetV = relativeTo.TransformDirection(myV);
-        Vector3 vDelta = targetV - movingEntity.GetComponent<Rigidbody>().velocity;
-        vDelta.x = Mathf.Clamp(vDelta.x, -(movingEntity.maxSpeed), movingEntity.maxSpeed);
-        vDelta.z = Mathf.Clamp(vDelta.z, -(movingEntity.maxSpeed), movingEntity.maxSpeed);
-        vDelta.y = 0;
-        movingEntity.addForce(vDelta, ForceMode.VelocityChange);
+        velocity = relativeTo.TransformDirection(velocity);
+        velocity.y = 0;
+        movingEntity.addForce(velocity, ForceMode.VelocityChange);
     }
 
     private void chargeJump(float chargeSpeed)
@@ -304,5 +303,4 @@ public class PersonController : MovingEntityController
         movingEntity.addForce(jumpVector, ForceMode.VelocityChange);
         _jumpCharge = _MIN_JUMP_CHARGE;
     }
-
 }

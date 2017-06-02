@@ -15,7 +15,7 @@ public abstract class Obstacle : Constant {
     }
 	// Use this for initialization
 	void Start () {
-        GameManager.getGameManager().obstacles.Add(this);
+        GameManager.getGameManager().baseEntities.Add(this);
 	}
 	
 	// Update is called once per frame
@@ -25,6 +25,6 @@ public abstract class Obstacle : Constant {
 
     private void OnDestroy()
     {
-       GameManager.getGameManager().obstacles.Remove(this);
+       GameManager.getGameManager().baseEntities.Remove(this);
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour {
 
     public List<BaseEntity> _baseEntities;
-    public List<BaseEntity> BaseEntities
+    public List<BaseEntity> baseEntities
     {
         get
         {
@@ -21,17 +21,8 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public List<Obstacle> _obstacles;
-    public List<Obstacle> obstacles
-    {
-        get
-        {
-            return _obstacles;
-        }
-    }
-
     public List<Wall> _walls;
-    public List<Walls> walls
+    public List<Wall> walls
     {
         get
         {

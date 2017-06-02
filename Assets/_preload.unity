@@ -472,6 +472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97de65242bd8e3b438089a0aa505a31f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  steeringBehaviour: {fileID: 0}
 --- !u!114 &289990054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -483,6 +484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee6b7cdb4c3677f47ae4eb55a6904c70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleTypes: 
   MovingEntityPoints:
   - {fileID: 799374614}
   - {fileID: 623893456}
@@ -1231,6 +1233,7 @@ GameObject:
   - component: {fileID: 1838072864}
   - component: {fileID: 1838072863}
   - component: {fileID: 1838072871}
+  - component: {fileID: 1838072872}
   m_Layer: 8
   m_Name: Person
   m_TagString: Untagged
@@ -1261,6 +1264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee6b7cdb4c3677f47ae4eb55a6904c70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleTypes: 
   MovingEntityPoints: []
 --- !u!114 &1838072865
 MonoBehaviour:
@@ -1273,6 +1277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97de65242bd8e3b438089a0aa505a31f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  steeringBehaviour: {fileID: 1838072872}
 --- !u!54 &1838072866
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1368,6 +1373,77 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementTarget: {x: 0, y: 0, z: 0}
   inFlockRadius: 0
+--- !u!114 &1838072872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1838072862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d41fdb06de4761d498d871a1fdc8c796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movingEntity: {fileID: 1838072864}
+  detectionBoxLength: 1
+  minDetectionBoxLength: 1
+  targetEntity1: {fileID: 289990054}
+  targetEntity2: {fileID: 0}
+  weightCohesion: 1
+  weightAlignment: 1
+  weightSeparation: 1
+  weightObstacleAvoidance: 1
+  weightWander: 1
+  weightWallAvoidance: 1
+  viewDistance: 1
+  wallDetectionFeelerLength: 1
+  feelers: 1
+  deceleration: 2
+  wanderRadius: 1
+  wanderDistance: 1
+  wanderJitter: 1
+  waypointSeekDistanceSqr: 1
+  weightSeek: 1
+  weightFlee: 1
+  weightArrive: 1
+  weightPursuit: 1
+  weightOffsetPursuit: 1
+  weightInterpose: 1
+  weightHide: 1
+  weightEvade: 1
+  weightFollowPath: 1
+  cellSpaceOn: 0
+  wallAvoidanceOn: 0
+  obstacleAvoidanceOn: 0
+  seekOn: 1
+  arriveOn: 0
+  wanderOn: 0
+  pursuitOn: 0
+  offsetPursuitOn: 0
+  interposeOn: 0
+  hideOn: 0
+  followPathOn: 0
+  evadeOn: 0
+  fleeOn: 0
+  spacePartitioningOn: 0
+  separationOn: 0
+  alignmentOn: 0
+  cohesionOn: 0
+  summingMethod: 1
+  obstacleAvoidanceTag: 
+  steeringForce: {x: 0, y: 0, z: 0}
+  theta: 1
+  prWallAvoidance: 1
+  prObstacleAvoidance: 1
+  prSeparation: 1
+  prFlee: 1
+  prEvade: 1
+  prAlignment: 1
+  prCohesion: 1
+  prWander: 1
+  prSeek: 1
+  prArrive: 1
+  prPursuit: 1
 --- !u!1 &1872985648
 GameObject:
   m_ObjectHideFlags: 0
@@ -1692,8 +1768,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 924bda715bb539141a27c2becdbfc95e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _MovingEntitys: []
-  _obstacles: []
+  _baseEntities: []
+  _movingEntities: []
+  _walls: []
 --- !u!4 &2060607572
 Transform:
   m_ObjectHideFlags: 0

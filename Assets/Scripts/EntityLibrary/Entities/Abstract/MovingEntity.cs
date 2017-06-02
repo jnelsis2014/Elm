@@ -53,6 +53,11 @@ public abstract class MovingEntity : BaseEntity
         {
             return GetComponent<Rigidbody>().velocity;
         }
+
+        set
+        {
+            GetComponent<Rigidbody>().velocity = value;
+        }
     }
 
     public Vector3 heading

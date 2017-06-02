@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public abstract class BaseEntity : MonoBehaviour
 {
@@ -55,4 +57,18 @@ public abstract class BaseEntity : MonoBehaviour
             return Physics.Raycast(transform.position, -Vector3.up, transform.localScale.y + .01f);
         }
     }
+
+    public void tagAsObstacle(MovingEntity avoider, float detectionLength)
+    {
+        List<string> types = avoider.obstacleTypes.Split(',').ToList<string>();
+
+        if (types.Contains(this.GetType().ToString()))
+        {
+            if (Vector3.Distance(avoider.position, position) <= detectionLength)
+                tag += avoider.obstacleAvoidanceTag;
+            else if (tag.Contains(avoider.obstacleAvoidanceTag))
+                tag.Replace(avoider.obstacleAvoidanceTag,"");
+        }
+    }
+
 }

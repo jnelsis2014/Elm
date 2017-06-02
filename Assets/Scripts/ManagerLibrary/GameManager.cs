@@ -3,12 +3,21 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 
-    public List<MovingEntity> _MovingEntitys;
-    public List<MovingEntity> MovingEntitys
+    public List<BaseEntity> _baseEntities;
+    public List<BaseEntity> BaseEntities
     {
         get
         {
-            return _MovingEntitys;
+            return _baseEntities;
+        }
+    }
+
+    public List<MovingEntity> _movingEntities;
+    public List<MovingEntity> MovingEntities
+    {
+        get
+        {
+            return _movingEntities;
         }
     }
 
@@ -32,18 +41,37 @@ public class GameManager : MonoBehaviour {
 
 	}
 
+    public void addBaseEntity(MovingEntity baseEntity)
+    {
+        _baseEntities.Add(baseEntity);
+    }
+
+
+    public void removeBaseEntity(MovingEntity baseEntity)
+    {
+        _baseEntities.Remove(baseEntity);
+    }
+
     public void addMovingEntity(MovingEntity MovingEntity)
     {
-        _MovingEntitys.Add(MovingEntity);
+        _movingEntities.Add(MovingEntity);
     }
 
     public void removeMovingEntity(MovingEntity MovingEntity)
     {
-        _MovingEntitys.Remove(MovingEntity);
+        _movingEntities.Remove(MovingEntity);
     }
 
     public static GameManager getGameManager()
     {
         return GameObject.FindGameObjectWithTag("game_manager").GetComponent<GameManager>();
+    }
+
+    public void tagObstaclesWithinViewRange(MovingEntity movingEntity, float obstacleDetectionLength)
+    {
+        foreach (BaseEntity baseEntity in _baseEntities)
+        {
+            baseEntity.tagAsObstacle(movingEntity, obstacleDetectionLength);
+        }
     }
 }

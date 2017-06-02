@@ -115,29 +115,15 @@ public class Person : MovingEntity
         }
     }
 
-    public override float mass
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public override float maxForce
     {
         get
         {
-            throw new NotImplementedException();
-        }
+            return Mathf.Infinity;        }
 
         set
         {
-            throw new NotImplementedException();
+            Debug.Log("Cannot set " + instanceName + "'s maxForce with a setter");
         }
     }
 
@@ -145,12 +131,12 @@ public class Person : MovingEntity
     {
         get
         {
-            throw new NotImplementedException();
+            return Mathf.Infinity;
         }
 
         set
         {
-            throw new NotImplementedException();
+            Debug.Log("Cannot set " + instanceName + "'s maxTurnRate with a setter");
         }
     }
 
@@ -158,12 +144,12 @@ public class Person : MovingEntity
     {
         get
         {
-            throw new NotImplementedException();
+            return 1;
         }
 
         set
         {
-            throw new NotImplementedException();
+            Debug.Log("Cannot set " + instanceName + "'s scale with a setter");
         }
     }
 
@@ -171,12 +157,12 @@ public class Person : MovingEntity
     {
         get
         {
-            throw new NotImplementedException();
+            return 1;
         }
 
         set
         {
-            throw new NotImplementedException();
+            Debug.Log("Cannot set " + instanceName + "'s bRadius with a setter");
         }
     }
 
@@ -197,7 +183,7 @@ public class Person : MovingEntity
 
         set
         {
-            throw new NotImplementedException();
+            Debug.Log("Cannot set " + instanceName + "'s maxSpeed with a setter.");
         }
     }
 

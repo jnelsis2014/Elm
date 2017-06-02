@@ -3,6 +3,20 @@ using UnityEngine;
 
 public abstract class MovingEntity : BaseEntity
 {
+    public string obstacleTypes;
+    
+    public string obstacleAvoidanceTag
+    {
+        get
+        {
+            return ID.ToString();
+        }
+
+        private set
+        {
+            Debug.Log(instanceName + " obstacle avoidance tag cannot be modified.");
+        }
+    }
 
     private bool _isPlayerControlled;
     public bool isPlayerControlled
@@ -67,10 +81,17 @@ public abstract class MovingEntity : BaseEntity
         }
     }
 
-    public abstract float mass
+    public float mass
     {
-        get;
-        set;
+        get
+        {
+            return GetComponent<Rigidbody>().mass; 
+        }
+
+        private set
+        {
+            GetComponent<Rigidbody>().mass = value;
+        }
     }
 
     public float speed
@@ -102,6 +123,19 @@ public abstract class MovingEntity : BaseEntity
     {
         get;
         set;
+    }
+
+    public GameManager gameManager
+    {
+        get
+        {
+            return GameManager.getGameManager();
+        }
+
+        private set
+        {
+            Debug.Log("Cannot set " + instanceName + "'s gameManager with a setter.");
+        }
     }
 
     public abstract void addForce(Vector3 force, ForceMode mode);

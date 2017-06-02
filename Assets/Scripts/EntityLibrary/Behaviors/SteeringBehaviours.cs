@@ -6,15 +6,143 @@ public class SteeringBehaviours : MonoBehaviour
 {
 
     public MovingEntity movingEntity;
-    public string obstacleAvoidanceTag;
-    public enum deceleration { slow = 3, normal = 2, fast = 1};
+    public float detectionBoxLength;
+    public float minDetectionBoxLength;
+    public MovingEntity targetEntity1;
+    public MovingEntity targetEntity2;
+    public float weightCohesion;
+    public float weightAlignment;
+    public float weightSeparation;
+    public float weightObstacleAvoidance;
+    public float weightWander;
+    public float weightWallAvoidance;
+    public float viewDistance;
+    public float wallDetectionFeelerLength;
+    public float feelers;
+    public enum Deceleration { slow = 3, normal = 2, fast = 1};
+    public Deceleration deceleration;
     public float wanderRadius;
     public float wanderDistance;
     public float wanderJitter;
-    public float minDetectionBoxLength;
-    public float detectionBoxLength;
-    public Vector3 wanderTarget;
+    public float waypointSeekDistanceSqr;
+    public float weightSeek;
+    public float weightFlee;
+    public float weightArrive;
+    public float weightPursuit;
+    public float weightOffsetPursuit;
+    public float weightInterpose;
+    public float weightHide;
+    public float weightEvade;
+    public float weightFollowPath;
+    public bool cellSpaceOn;
+    public bool wallAvoidanceOn;
+    public bool obstacleAvoidanceOn;
+    public bool seekOn;
+    public bool arriveOn;
+    public bool wanderOn;
+    public bool pursuitOn;
+    public bool offsetPursuitOn;
+    public bool interposeOn;
+    public bool hideOn;
+    public bool followPathOn;
+    public bool evadeOn;
+    public bool fleeOn;
+    public bool spatialPartitioningOn;
+    public bool separationOn;
+    public bool alignmentOn;
+    public bool cohesionOn;
+    public enum SummingMethod { weighted_average, prioritized, dithered};
+    public SummingMethod summingMethod;
+    public string obstacleAvoidanceTag;
+    public Vector3 steeringForce;
 
+    float theta = Random.Range(0, 1) * Mathf.PI * 2;
+
+    public Vector3 wanderTarget
+    {
+        get
+        {
+           return new Vector3(wanderRadius * Mathf.Cos(theta), 0, wanderRadius * Mathf.Sin(theta));
+        }
+        private set
+        {
+            Debug.Log("Cannot set the wander target for " + movingEntity.instanceName + " using a setter.");
+        }
+    }
+
+    public Vector3 calculate()
+    {
+        steeringForce = Vector3.zero;
+
+        if (!spatialPartitioningOn)
+        {
+            if (separationOn || alignmentOn || cohesionOn)
+            {
+                //calculate neighbors based on view distance
+            }
+        }
+
+        switch (summingMethod)
+        {
+            case SummingMethod.weighted_average:
+                steeringForce = calculateWeightedSum(); break;
+
+            case SummingMethod.prioritized:
+                steeringForce = calculatePrioritized(); break;
+
+            case SummingMethod.dithered:
+                steeringForce = calculateDithered(); break;
+
+            default:
+                steeringForce = new Vector3(0, 0, 0); break;
+        }
+        return steeringForce;
+    }
+
+    public float forwardComponent()
+    {
+        return Vector3.Dot(movingEntity.heading, steeringForce);
+    }
+
+    public float sideComponent()
+    {
+        return Vector3.Dot(movingEntity.side, steeringForce);
+    }
+
+    bool accumulateForce(Vector3 runningTotal, Vector3 forceToAdd)
+    {
+        float magnitudeSoFar = runningTotal.magnitude;
+        float magnitudeRemaining = movingEntity.maxForce - magnitudeSoFar;
+        if (magnitudeRemaining <= 0f)
+            return false;
+
+        float magnitudeToAdd = forceToAdd.magnitude;
+
+        if (magnitudeToAdd < magnitudeRemaining)
+        {
+            runningTotal += forceToAdd;
+        }
+
+        return true;
+    }
+
+    public Vector3 calculateWeightedSum()
+    {
+        Vector3 force = Vector3.zero;
+        return steeringForce;
+    }
+
+    public Vector3 calculatePrioritized()
+    {
+        Vector3 force = Vector3.zero;
+        return steeringForce;
+    }
+
+    public Vector3 calculateDithered()
+    {
+        Vector3 force = Vector3.zero;
+        return steeringForce;
+    }
     // Use this for initialization
     void Start () {
 		
@@ -49,7 +177,7 @@ public class SteeringBehaviours : MonoBehaviour
         return (desiredVelocity - movingEntity.velocity);
     }
 
-    private Vector3 arrive(Vector3 targetPos, deceleration theDeceleration)
+    private Vector3 arrive(Vector3 targetPos, Deceleration theDeceleration)
     {
         Vector3 toTarget = targetPos - movingEntity.position;
         float distance = toTarget.magnitude;
@@ -134,6 +262,7 @@ public class SteeringBehaviours : MonoBehaviour
         return targetWorld - movingEntity.position;
     }
 
+    public Vector3 obstacleAvoidance(List<BaseEntity> obstacles)
     {
         //detection box length is proportional to movingEntity velocity
         detectionBoxLength = minDetectionBoxLength + (movingEntity.speed / movingEntity.maxSpeed) * detectionBoxLength;
@@ -191,5 +320,4 @@ public class SteeringBehaviours : MonoBehaviour
 
         return transform.TransformPoint(steeringForce);
     }
-
 }

@@ -68,7 +68,7 @@ public abstract class MovingEntity : BaseEntity
         }
     }
 
-    public Vector3 _side
+    public Vector3 side
     {
         get
         {

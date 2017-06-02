@@ -483,11 +483,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee6b7cdb4c3677f47ae4eb55a6904c70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agentPoints:
+  MovingEntityPoints:
   - {fileID: 799374614}
   - {fileID: 623893456}
-  _closestObstacle: {fileID: 0}
-  _blindDetectedAgents: []
 --- !u!114 &289990055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1263,11 +1261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee6b7cdb4c3677f47ae4eb55a6904c70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agentPoints:
-  - {fileID: 536666757}
-  - {fileID: 72174474}
-  _closestObstacle: {fileID: 0}
-  _blindDetectedAgents: []
+  MovingEntityPoints: []
 --- !u!114 &1838072865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1698,7 +1692,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 924bda715bb539141a27c2becdbfc95e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agents: []
+  _MovingEntitys: []
+  _obstacles: []
 --- !u!4 &2060607572
 Transform:
   m_ObjectHideFlags: 0

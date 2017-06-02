@@ -29,8 +29,8 @@ public abstract class Weapon : Destructable , IHoldable
         get;
     }
 
-    private Agent _holder;
-    public Agent holder
+    private MovingEntity _holder;
+    public MovingEntity holder
     {
         get
         {
@@ -116,20 +116,20 @@ public abstract class Weapon : Destructable , IHoldable
         Debug.Log(instanceName + " collided with " + theEntity.instanceName);
     }
 
-    public float getInteractableDistance(Vector3 agentForward)
+    public float getInteractableDistance(Vector3 MovingEntityForward)
     {
-        float result = Vector3.Distance(agentForward, transform.position);
+        float result = Vector3.Distance(MovingEntityForward, transform.position);
         return result;
     }
 
-    public void interact(Agent agent)
+    public void interact(MovingEntity MovingEntity)
     {
         string IString = "A(n) ";
-        if (agent.GetType() == typeof(Person))
+        if (MovingEntity.GetType() == typeof(Person))
         {
-            IString += "person with the ID " + agent.instanceName + " interacted with " + instanceName;
-            ((Person)agent).holdables = this;
-            holder = agent;
+            IString += "person with the ID " + MovingEntity.instanceName + " interacted with " + instanceName;
+            ((Person)MovingEntity).holdables = this;
+            holder = MovingEntity;
         }
         Debug.Log(IString);
     }
@@ -139,5 +139,5 @@ public abstract class Weapon : Destructable , IHoldable
     public abstract void toss(Vector3 target);
     public abstract void drop();
     public abstract void follow();
-    public abstract void pickUp(AgentPoint point);
+    public abstract void pickUp(MovingEntityPoint point);
 }

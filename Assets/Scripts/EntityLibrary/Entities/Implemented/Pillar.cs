@@ -21,6 +21,32 @@ public class Pillar : Obstacle {
         }
     }
 
+    public override float scale
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override float bRadius
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Use this for initialization
     void Start () {
         GameManager.getGameManager().obstacles.Add(this);

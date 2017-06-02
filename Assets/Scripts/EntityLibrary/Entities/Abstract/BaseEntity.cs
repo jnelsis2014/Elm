@@ -22,6 +22,31 @@ public abstract class BaseEntity : MonoBehaviour
         }
     }
 
+    public Vector3 position
+    {
+        get
+        {
+            return transform.position;
+        }
+
+        private set
+        {
+            transform.position = value;
+        }
+    }
+
+    public abstract float scale
+    {
+        get;
+        set;
+    }
+
+    public abstract float bRadius
+    {
+        get;
+        set;
+    }
+
     //is the bottom of an object touching a surface?
     public bool isGrounded
     {

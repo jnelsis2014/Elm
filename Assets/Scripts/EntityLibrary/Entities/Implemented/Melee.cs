@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Melee : Weapon, IHoldable
 {
@@ -42,6 +43,32 @@ public class Melee : Weapon, IHoldable
         }
     }
 
+    public override float scale
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override float bRadius
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Use this for initialization
     void Start () {
 		
@@ -78,7 +105,7 @@ public class Melee : Weapon, IHoldable
         GetComponent<Rigidbody>().AddForce((target - transform.position) * 20, ForceMode.VelocityChange);
     }
     
-    public override void pickUp(AgentPoint point)
+    public override void pickUp(MovingEntityPoint point)
     {
         followTarget = point;
     }

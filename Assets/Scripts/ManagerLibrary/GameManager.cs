@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 
-    public List<Agent> _agents;
-    public List<Agent> agents
+    public List<MovingEntity> _MovingEntitys;
+    public List<MovingEntity> MovingEntitys
     {
         get
         {
-            return _agents;
+            return _MovingEntitys;
         }
     }
 
@@ -29,21 +29,17 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        foreach (Agent agent in agents)
-        {
-            agent.updateBlindDetectedAgents();
-            agent.updateLocalObstacles();
-        }
+
 	}
 
-    public void addAgent(Agent agent)
+    public void addMovingEntity(MovingEntity MovingEntity)
     {
-        _agents.Add(agent);
+        _MovingEntitys.Add(MovingEntity);
     }
 
-    public void removeAgent(Agent agent)
+    public void removeMovingEntity(MovingEntity MovingEntity)
     {
-        _agents.Remove(agent);
+        _MovingEntitys.Remove(MovingEntity);
     }
 
     public static GameManager getGameManager()

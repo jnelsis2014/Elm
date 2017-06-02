@@ -4,6 +4,20 @@ public class Plane : Constant
 {
 
     private const string GLOBAL_NAME = "Plane";
+
+    public override float bRadius
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public override string globalName
     {
         get
@@ -17,6 +31,19 @@ public class Plane : Constant
         get
         {
             return GLOBAL_NAME + " " + ID;
+        }
+    }
+
+    public override float scale
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 

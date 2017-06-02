@@ -2,7 +2,7 @@
 using FluentBehaviourTree;
 using System.Collections.Generic;
 
-public class PersonController : AgentController
+public class PersonController : MovingEntityController
 {
 
     public const float _MIN_JUMP_HORIZONTAL_V = 0;      //minumum value of the amount of velocity that may be applied
@@ -35,12 +35,12 @@ public class PersonController : AgentController
         }
     }
 
-    private Person _person;
-    public Person person
+    private Person _movingEnity;
+    public Person movingEntity
     {
         get
         {
-            return _person;
+            return _movingEnity;
         }
     }
 
@@ -53,12 +53,12 @@ public class PersonController : AgentController
         }
     }
 
-    private AgentPoint _activePoint;
-    public AgentPoint activePoint
+    private MovingEntityPoint _movingEntityPoint;
+    public MovingEntityPoint movingEntityPoint
     {
         get
         {
-            return _activePoint;
+            return _movingEntityPoint;
         }
     }
 
@@ -88,10 +88,10 @@ public class PersonController : AgentController
         }
         else
         {
-            Debug.Log(agent.instanceName + "'s controller attempted to access the main cameras control script, but none was assigned.");
+            Debug.Log(movingEntity.instanceName + "'s controller attempted to access the main cameras control script, but none was assigned.");
         }
 
-        if ((_person = GetComponent<Person>()) == null)
+        if ((_movingEnity = GetComponent<Person>()) == null)
         {
             Debug.Log("Warning. You have attempted to attach a person controller to an object which does not have a "
                 + " person script. Please attach a person script to this object or the controller will not " +
@@ -105,14 +105,14 @@ public class PersonController : AgentController
                 "function correctly");
         }
 
-        if (_person.getOccupiedPoint() != null)
+        if (_movingEnity.getOccupiedPoint() != null)
         {
-            _activePoint = person.getOccupiedPoint();
+            _movingEntityPoint = movingEntity.getOccupiedPoint();
         }
 
-        agent.GetComponent<Rigidbody>().freezeRotation = true;
+        movingEntity.GetComponent<Rigidbody>().freezeRotation = true;
         if (tag == "player")
-            agent.isPlayerControlled = true;
+            movingEntity.isPlayerControlled = true;
     }
 
     // Use this for initialization
@@ -121,7 +121,6 @@ public class PersonController : AgentController
         BehaviourTreeBuilder builder = new BehaviourTreeBuilder();
         _behaviourTree = builder
         .Selector("PersonBehavior")
-            .Do("WanderRandomly", t => wander())
         .End()
         .Build();
     }
@@ -132,20 +131,16 @@ public class PersonController : AgentController
 
     public void FixedUpdate()
     {
-        if (agent.isPlayerControlled == true)
+        if (movingEntity.isPlayerControlled == true)
             getInputs();
         else
         {
             _behaviourTree.Tick(new TimeData(Time.deltaTime));   
         }
 
-        if (agent.GetComponent<Rigidbody>().velocity != Vector3.zero && agent.isGrounded)
+        if (movingEntity.GetComponent<Rigidbody>().velocity != Vector3.zero && movingEntity.isGrounded)
         {
-            transform.rotation = Quaternion.RotateTowards
-            (
-                transform.rotation, Quaternion.LookRotation(new Vector3(agent.GetComponent<Rigidbody>().velocity.x, 0, agent.GetComponent<Rigidbody>().velocity.z)),
-                Time.deltaTime * agent.maxSpeed * agent.rotationOffset
-            );
+            movingEntity.heading = new Vector3(movingEntity.velocity.x, 0, movingEntity.velocity.z);
         }
     }
 
@@ -175,14 +170,14 @@ public class PersonController : AgentController
         bool isLockHeld = Input.GetKeyUp(KeyCode.Q);
         bool isLockUp = Input.GetKeyUp(KeyCode.Q);
 
-        if (agent.isPlayerControlled == true)
+        if (movingEntity.isPlayerControlled == true)
         {
             //movement
-            if (agent.isGrounded)
+            if (movingEntity.isGrounded)
             {
                 applyVelocity
                 (
-                    movementVelocity * agent.maxSpeed,
+                    movementVelocity * movingEntity.maxSpeed,
                     cameraTransform
                 );
             }
@@ -191,29 +186,29 @@ public class PersonController : AgentController
             {
                 chargeJump(.1f);
             }
-            else if (isJumpUp && agent.isGrounded)
+            else if (isJumpUp && movingEntity.isGrounded)
             {
                 applyJumpVelocity(_jumpCharge);
             }
 
             //actions
-            if (_person.getOccupiedPoint() != null) //if there is an occupied point
+            if (_movingEnity.getOccupiedPoint() != null) //if there is an occupied point
             {
-                if (_activePoint != null && _activePoint.occupant != null) //if the current point selected is occupied
+                if (_movingEntityPoint != null && _movingEntityPoint.occupant != null) //if the current point selected is occupied
                 {
                     if (isReleaseDown) //if attack and switch are held simulaneously
                     {
-                        _person.removeIHoldable(_activePoint.occupant);
-                        _activePoint.drop();
+                        _movingEnity.removeIHoldable(_movingEntityPoint.occupant);
+                        _movingEntityPoint.drop();
                     }
                     else if (isSwitchDown)
                     {
-                        _activePoint = _person.getNextOccupiedPoint(_activePoint);
+                        _movingEntityPoint = _movingEnity.getNextOccupiedPoint(_movingEntityPoint);
                     }
                     else if (isAttackHeld || isTossHeld) //if attach is held down
                     {
                         //set camera to over the shoulder mode
-                        _activePoint.aim();
+                        _movingEntityPoint.aim();
                     }
                     else if (isAttackUp)
                     {
@@ -230,7 +225,7 @@ public class PersonController : AgentController
                         {
                             Debug.DrawLine(ray.origin, hit.point, Color.red, 3f);
                             Debug.Log("Hit the object " + hit.collider.GetComponent<BaseEntity>().instanceName);
-                            _activePoint.toss(hit.point);
+                            _movingEntityPoint.toss(hit.point);
                         }
                         else
                         {
@@ -239,17 +234,17 @@ public class PersonController : AgentController
                         }
                     }
                 }
-                else if (_person.getNextOccupiedPoint(_activePoint) != null) //if there is another point with an occupant
+                else if (_movingEnity.getNextOccupiedPoint(_movingEntityPoint) != null) //if there is another point with an occupant
                                                                              //and the current point selected is NOT occupied
                 {
-                    _activePoint = person.getNextOccupiedPoint(_activePoint); //set the active point to the next occupied point
+                    _movingEntityPoint = movingEntity.getNextOccupiedPoint(_movingEntityPoint); //set the active point to the next occupied point
                 }
 
                 //lock on
                 if (isLockDown)
                 {
                     //toggle lockon
-                    //if lockon = true, lock on to agent closest to the center of the screen
+                    //if lockon = true, lock on to movingEntity closest to the center of the screen
                     //else, return camera to free movement
                 }
             }
@@ -257,11 +252,11 @@ public class PersonController : AgentController
             //interaction
             if (isInteractDown)
             {
-                IInteractable interactable = _person.inInteractionRange;
+                IInteractable interactable = _movingEnity.inInteractionRange;
                 if (interactable != null)
-                    interactable.interact(_person);
+                    interactable.interact(_movingEnity);
                 else
-                    Debug.Log("There were no interactables in the " + _person.instanceName + "'s interaction range.");
+                    Debug.Log("There were no interactables in the " + _movingEnity.instanceName + "'s interaction range.");
             }
         }
     }
@@ -269,21 +264,21 @@ public class PersonController : AgentController
     private void applyVelocity(Vector3 myV)
     {
         Vector3 targetV = myV;
-        Vector3 vDelta = targetV - agent.GetComponent<Rigidbody>().velocity;
-        vDelta.x = Mathf.Clamp(vDelta.x, -agent.maxSpeed, person.maxSpeed);
-        vDelta.z = Mathf.Clamp(vDelta.z, -agent.maxSpeed, person.maxSpeed);
+        Vector3 vDelta = targetV - movingEntity.GetComponent<Rigidbody>().velocity;
+        vDelta.x = Mathf.Clamp(vDelta.x, -movingEntity.maxSpeed, movingEntity.maxSpeed);
+        vDelta.z = Mathf.Clamp(vDelta.z, -movingEntity.maxSpeed, movingEntity.maxSpeed);
         vDelta.y = 0;
-        agent.addForce(vDelta, ForceMode.VelocityChange);
+        movingEntity.addForce(vDelta, ForceMode.VelocityChange);
     }
 
     private void applyVelocity(Vector3 myV, Transform relativeTo)
     {
         Vector3 targetV = relativeTo.TransformDirection(myV);
-        Vector3 vDelta = targetV - agent.GetComponent<Rigidbody>().velocity;
-        vDelta.x = Mathf.Clamp(vDelta.x, -(agent.maxSpeed), agent.maxSpeed);
-        vDelta.z = Mathf.Clamp(vDelta.z, -(agent.maxSpeed), agent.maxSpeed);
+        Vector3 vDelta = targetV - movingEntity.GetComponent<Rigidbody>().velocity;
+        vDelta.x = Mathf.Clamp(vDelta.x, -(movingEntity.maxSpeed), movingEntity.maxSpeed);
+        vDelta.z = Mathf.Clamp(vDelta.z, -(movingEntity.maxSpeed), movingEntity.maxSpeed);
         vDelta.y = 0;
-        agent.addForce(vDelta, ForceMode.VelocityChange);
+        movingEntity.addForce(vDelta, ForceMode.VelocityChange);
     }
 
     private void chargeJump(float chargeSpeed)
@@ -302,53 +297,12 @@ public class PersonController : AgentController
         Vector3 jumpVector = new Vector3
         (
             Mathf.Clamp(Input.GetAxis("Horizontal"), _MIN_JUMP_HORIZONTAL_V, _MAX_JUMP_HORIZONTAL_V),
-            agent.transform.up.y * velocity,
+            movingEntity.transform.up.y * velocity,
             Mathf.Clamp(Input.GetAxis("Vertical"), _MIN_JUMP_HORIZONTAL_V, _MAX_JUMP_HORIZONTAL_V)
         );
 
-        agent.addForce(jumpVector, ForceMode.VelocityChange);
+        movingEntity.addForce(jumpVector, ForceMode.VelocityChange);
         _jumpCharge = _MIN_JUMP_CHARGE;
     }
 
-    private Vector3 getFlockingVector()
-    {
-        return agent.getFlockingVector();
-    }
-
-    private Vector3 getFlockingVector(Vector3 aWeight, Vector3 cWeight, Vector3 sWeight)
-    {
-        return agent.getFlockingVector(aWeight, cWeight, sWeight);
-    }
-
-    //behavior tree methods
-    public bool obstacleAhead()
-    {
-        return agent.hasObstacle();
-    }
-
-    public bool agentsNearby()
-    {
-        return agent.hasNearbyAgents();
-    }
-
-    public BehaviourTreeStatus wander()
-    {
-        if (Vector3.Distance(transform.position, _movementTarget) < 1f)
-        {
-            _movementTarget = agent.getWanderPoint(10);
-            agent.minObstacleDetectDistance = Vector3.Distance(transform.position, _movementTarget);
-            return BehaviourTreeStatus.Success;
-        }
-        else
-        {
-            if (obstacleAhead())
-            {
-                applyVelocity(agent.getObstacleAvoidanceVector());
-                _movementTarget = transform.position;
-            }
-            else
-                applyVelocity(agent.getArriveVector(_movementTarget, 2)); 
-            return BehaviourTreeStatus.Running;
-        }
-    }
 }

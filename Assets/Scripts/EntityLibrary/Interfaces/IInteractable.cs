@@ -13,7 +13,7 @@ public interface IInteractable
         get;
     }
 
-    Agent holder
+    MovingEntity holder
     {
         get;
     }
@@ -23,8 +23,8 @@ public interface IInteractable
         get;
     }
 
-    float getInteractableDistance(Vector3 agentForward); //Should return the distance from an agent which is
+    float getInteractableDistance(Vector3 MovingEntityForward); //Should return the distance from an MovingEntity which is
                                         //interacting with the object
 
-    void interact(Agent agent);         //Should execute the interaction;
+    void interact(MovingEntity MovingEntity);         //Should execute the interaction;
 }

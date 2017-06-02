@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class AgentPoint : MountPoint
+public abstract class MovingEntityPoint : MountPoint
 {
 
 	// Use this for initialization

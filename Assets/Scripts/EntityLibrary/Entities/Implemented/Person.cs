@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Person : Agent
+public class Person : MovingEntity
 {
 
-    public List<AgentPoint> agentPoints; //public convenience field for unity editor
-    private List<AgentPoint> _agentPoints = new List<AgentPoint>(); //private field stores actual references to weapon positions
+    public List<MovingEntityPoint> MovingEntityPoints; //public convenience field for unity editor
+    private List<MovingEntityPoint> _MovingEntityPoints = new List<MovingEntityPoint>(); //private field stores actual references to weapon positions
 
     private const string GLOBAL_NAME = "Person";
     public override string globalName
@@ -32,31 +32,6 @@ public class Person : Agent
             return true;
         }
     }
-
-    public override float maxSpeed
-    {
-        get
-        {
-            return 5;
-        }
-    }
-
-    public override float rotationOffset
-    {
-        get
-        {
-            return 80;
-        }
-    }
-
-    public override float blindDetectRadius
-    {
-        get
-        {
-            return 40f;
-        }
-    }
-
     
 
     private List<IInteractable> _inInteractionRange = new List<IInteractable>(); //return to private
@@ -103,7 +78,7 @@ public class Person : Agent
             _inInteractionRange.Remove(value);
 
             Debug.Log(value.IInstanceName + " was added to the weapons list of " + instanceName);
-            foreach (AgentPoint point in agentPoints)
+            foreach (MovingEntityPoint point in MovingEntityPoints)
             {
                 if (point.occupant == null)
                 {
@@ -121,7 +96,7 @@ public class Person : Agent
     {
         set
         {
-            if (value < agentPoints.Count)
+            if (value < MovingEntityPoints.Count)
             {
                 _activePoint = value;
                 Debug.Log(instanceName + "'s active point was set to the index " + value + ".");
@@ -140,50 +115,109 @@ public class Person : Agent
         }
     }
 
-    private float _minObstacleDetectDistance;
-    public override float minObstacleDetectDistance
+    public override float mass
     {
         get
         {
-            return _minObstacleDetectDistance;
+            throw new NotImplementedException();
         }
+
         set
         {
-            _minObstacleDetectDistance = value;
+            throw new NotImplementedException();
         }
     }
 
-    public override float obstacleDetectWidth
+    public override float maxForce
     {
         get
         {
-            return GetComponent<CapsuleCollider>().bounds.extents.x;
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 
-    public override double brakingWeight
+    public override float maxTurnRate
     {
         get
         {
-            return .2d;
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
         }
     }
+
+    public override float scale
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override float bRadius
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override float rotationOffset
+    {
+        get
+        {
+            return 2f;
+        }
+    }
+
+    public override float maxSpeed
+    {
+        get
+        {
+            return 5f;
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    private float _minObstacleDetectDistance;
 
     private void Awake()
     {
-        foreach (AgentPoint agentPoint in agentPoints)
+        foreach (MovingEntityPoint MovingEntityPoint in MovingEntityPoints)
         {
-            if (agentPoint != null)
+            if (MovingEntityPoint != null)
             {
-                if (agentPoint.transform.parent != transform)
+                if (MovingEntityPoint.transform.parent != transform)
                 {
-                    Debug.Log("Position for object with ID number " + agentPoint.GetInstanceID() + " was not added to " + ID + "'s " +
-                        " agentPoint list. The agent point fields for that object are only intended for its child objects." +
-                        "Please check that the objects in the agent point fields are children of " + ID);
+                    Debug.Log("Position for object with ID number " + MovingEntityPoint.GetInstanceID() + " was not added to " + ID + "'s " +
+                        " MovingEntityPoint list. The MovingEntity point fields for that object are only intended for its child objects." +
+                        "Please check that the objects in the MovingEntity point fields are children of " + ID);
                 }
                 else
                 {
-                    _agentPoints.Add(agentPoint);
+                    _MovingEntityPoints.Add(MovingEntityPoint);
                     _holdables.Add(null);
                 }
             }
@@ -193,7 +227,7 @@ public class Person : Agent
     // Use this for initialization
     void Start()
     {
-        GameManager.getGameManager().addAgent(this);
+        GameManager.getGameManager().addMovingEntity(this);
     }
 
     // Update is called once per frame
@@ -204,7 +238,7 @@ public class Person : Agent
 
     private void OnDestroy()
     {
-        GameManager.getGameManager().removeAgent(this);
+        GameManager.getGameManager().removeMovingEntity(this);
     }
 
     public override void addForce(Vector3 force, ForceMode mode)
@@ -249,11 +283,11 @@ public class Person : Agent
         }
     }
 
-    public AgentPoint getOccupiedPoint()
+    public MovingEntityPoint getOccupiedPoint()
     {
-        AgentPoint result = null;
+        MovingEntityPoint result = null;
 
-        foreach(AgentPoint point in _agentPoints)
+        foreach(MovingEntityPoint point in _MovingEntityPoints)
         {
             if (point.occupant != null)
             {
@@ -263,16 +297,16 @@ public class Person : Agent
         }
 
         if (result == null)
-            Debug.Log("Attempted to find an occupied point in " + instanceName + "'s agent points, but there were none.");
+            Debug.Log("Attempted to find an occupied point in " + instanceName + "'s MovingEntity points, but there were none.");
 
         return result;
     }
 
-    public AgentPoint getNextOccupiedPoint(AgentPoint currentPoint)
+    public MovingEntityPoint getNextOccupiedPoint(MovingEntityPoint currentPoint)
     {
-        AgentPoint result = null;
+        MovingEntityPoint result = null;
 
-        foreach(AgentPoint point in _agentPoints)
+        foreach(MovingEntityPoint point in _MovingEntityPoints)
         {
             if (point != currentPoint && point.occupant != null)
             {
@@ -282,7 +316,7 @@ public class Person : Agent
             else
             {
                 result = null;
-                Debug.Log("Tried to access the next occupied point in agent points for " + instanceName + " but there were none.");
+                Debug.Log("Tried to access the next occupied point in MovingEntity points for " + instanceName + " but there were none.");
             }
         }
         return result;

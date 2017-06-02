@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class Hand : AgentPoint
+public class Hand : MovingEntityPoint
 {
 
     public override string globalName
@@ -41,6 +42,32 @@ public class Hand : AgentPoint
             else
                 Debug.Log(value.IInstanceName + " could not be placed in " + instanceName + " because " + instanceName + " is already occupied by "
                     + _occupant.IInstanceName + ".");
+        }
+    }
+
+    public override float scale
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override float bRadius
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 

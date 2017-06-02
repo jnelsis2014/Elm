@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AgentController : MonoBehaviour
+public abstract class MovingEntityController : MonoBehaviour
 {
-    public const string GLOBAL_NAME = "Agent Controller";
+    public const string GLOBAL_NAME = "MovingEntity Controller";
 
     public int id
     {
@@ -22,18 +22,18 @@ public abstract class AgentController : MonoBehaviour
         }
     }
 
-    public Agent agent
+    public MovingEntity MovingEntity
     {
         get
         {
-            if (GetComponent<Agent>() != null)
+            if (GetComponent<MovingEntity>() != null)
             {
-                return GetComponent<Agent>();
+                return GetComponent<MovingEntity>();
             }
             else
             {
-                Debug.Log(instanceName + "attempted to access the Agent script on its assigned GO," +
-                    " but no Agent was attached.");
+                Debug.Log(instanceName + "attempted to access the MovingEntity script on its assigned GO," +
+                    " but no MovingEntity was attached.");
                 return null;
             }
         }

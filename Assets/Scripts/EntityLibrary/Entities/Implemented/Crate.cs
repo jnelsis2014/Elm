@@ -1,5 +1,19 @@
-﻿public class Crate : Destructable
+﻿using System;
+
+public class Crate : Destructable
 {
+    public override float bRadius
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public override string globalName
     {
@@ -22,6 +36,19 @@
         get
         {
             return 10f;
+        }
+    }
+
+    public override float scale
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 

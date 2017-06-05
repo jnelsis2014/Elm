@@ -58,19 +58,6 @@ public class Hand : MovingEntityPoint
         }
     }
 
-    public override float bRadius
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     private void Awake()
     {
 

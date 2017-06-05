@@ -56,19 +56,6 @@ public class Melee : Weapon, IHoldable
         }
     }
 
-    public override float bRadius
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     // Use this for initialization
     void Start () {
 		

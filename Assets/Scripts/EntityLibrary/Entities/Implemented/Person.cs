@@ -154,19 +154,6 @@ public class Person : MovingEntity
         }
     }
 
-    public override float bRadius
-    {
-        get
-        {
-            return 1;
-        }
-
-        set
-        {
-            Debug.Log("Cannot set " + instanceName + "'s bRadius with a setter");
-        }
-    }
-
     private float _minObstacleDetectDistance;
 
     private void Awake()

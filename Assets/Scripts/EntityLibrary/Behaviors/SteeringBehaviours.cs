@@ -137,7 +137,6 @@ public class SteeringBehaviours : MonoBehaviour
 
     public Vector3 calculate()
     {
-        Debug.Log(movingEntity.instanceName + " is calculating its movement vector.");
         _steeringForce = Vector3.zero;
 
         if (!spacePartitioningOn)
@@ -312,7 +311,6 @@ public class SteeringBehaviours : MonoBehaviour
         if (seekOn)
         {
             force = seek(targetEntity1.position) * weightSeek;
-            Debug.Log(force);
             if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString); return _steeringForce; }
             velocityString += "'s current steering force with respect to seeking is " + _steeringForce + "\n";
         }
@@ -473,7 +471,6 @@ public class SteeringBehaviours : MonoBehaviour
 
     public Vector3 seek(Vector3 targetPos)
     {
-        Debug.Log(movingEntity.instanceName + " is seeking " + targetEntity1.instanceName);
         Vector3 desiredVelocity = (targetPos - movingEntity.position).normalized * movingEntity.maxSpeed;
         return (desiredVelocity - movingEntity.velocity);
     }
@@ -595,8 +592,9 @@ public class SteeringBehaviours : MonoBehaviour
 
         foreach (BaseEntity obstacle in obstacles)
         {
-            if (obstacle.tag.Contains(movingEntity.obstacleAvoidanceTag))
+            if (obstacle.obstacleAvoiderTags.Contains(movingEntity.obstacleAvoidanceTag))
 	        {
+                Debug.Log(movingEntity.instanceName + " detected " + obstacle.instanceName + " as an obstacle.");
                 Vector3 localPos = transform.InverseTransformPoint(obstacle.position);
                 if (localPos.z >= 0) //if the obstacle is not behind the movingEntity
                 {

@@ -34,19 +34,6 @@ public class Pillar : Obstacle {
         }
     }
 
-    public override float bRadius
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     // Use this for initialization
     void Start () {
         GameManager.getGameManager().baseEntities.Add(this);

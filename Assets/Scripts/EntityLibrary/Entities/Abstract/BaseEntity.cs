@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class BaseEntity : MonoBehaviour
 {
+    public List<string> obstacleAvoiderTags;
 
     public abstract string globalName
     {
@@ -43,11 +44,7 @@ public abstract class BaseEntity : MonoBehaviour
         set;
     }
 
-    public abstract float bRadius
-    {
-        get;
-        set;
-    }
+    public float bRadius;
 
     //is the bottom of an object touching a surface?
     public bool isGrounded
@@ -60,15 +57,47 @@ public abstract class BaseEntity : MonoBehaviour
 
     public void tagAsObstacle(MovingEntity avoider, float detectionLength)
     {
+        string debugString = "";
         List<string> types = avoider.obstacleTypes.Split(',').ToList<string>();
-
+        debugString += avoider.instanceName + "'s obstacle avoidance list: \n";
+        foreach (string type in types)
+            debugString += type + "\n";
+     
+        //in list
         if (types.Contains(this.GetType().ToString()))
         {
+            //inform found
+            debugString += instanceName + "'s type, " + this.GetType() + ", was found in list.\n";
+            //in range
             if (Vector3.Distance(avoider.position, position) <= detectionLength)
-                tag += avoider.obstacleAvoidanceTag;
-            else if (tag.Contains(avoider.obstacleAvoidanceTag))
-                tag.Replace(avoider.obstacleAvoidanceTag,"");
+            {
+                //Debug.Log(detectionLength);
+                //already tagged
+                if (obstacleAvoiderTags.Contains(avoider.obstacleAvoidanceTag))
+                {
+                    //inform already tagged
+                    debugString += instanceName + " was within obstacle avoidance distance, but already tagged.";
+                }
+                else
+                {
+                    //not in range. add to list and inform.
+                    debugString += instanceName + " was within obstacle avoidance distance. Adding tag.\n";
+                    obstacleAvoiderTags.Add(avoider.obstacleAvoidanceTag);
+                }
+            }
+            //in list, not in range. inform not in range and remove tag
+            else
+            {
+                debugString += instanceName + " was not within obstacle avoidance distance. Removing tag.";
+                obstacleAvoiderTags.Remove(avoider.obstacleAvoidanceTag);
+            }
         }
+        else
+        {
+            //inform not in list
+            debugString += instanceName + "'s type, " + this.GetType() + ", was not found in list";
+        }
+        //Debug.Log(debugString);
     }
 
 }

@@ -2,19 +2,6 @@
 
 public class Crate : Destructable
 {
-    public override float bRadius
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public override string globalName
     {
         get

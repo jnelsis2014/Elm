@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -485,6 +485,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacleTypes: 
+  rotationOffset: 5
+  maxSpeed: 0.5
   MovingEntityPoints:
   - {fileID: 799374614}
   - {fileID: 623893456}
@@ -1265,6 +1267,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacleTypes: 
+  rotationOffset: 5
+  maxSpeed: 5
   MovingEntityPoints: []
 --- !u!114 &1838072865
 MonoBehaviour:
@@ -1400,8 +1404,8 @@ MonoBehaviour:
   feelers: 1
   deceleration: 2
   wanderRadius: 1
-  wanderDistance: 1
-  wanderJitter: 1
+  wanderDistance: 2
+  wanderJitter: 0.5
   waypointSeekDistanceSqr: 1
   weightSeek: 1
   weightFlee: 1
@@ -1415,7 +1419,7 @@ MonoBehaviour:
   cellSpaceOn: 0
   wallAvoidanceOn: 0
   obstacleAvoidanceOn: 0
-  seekOn: 1
+  seekOn: 0
   arriveOn: 0
   wanderOn: 0
   pursuitOn: 0
@@ -1432,18 +1436,17 @@ MonoBehaviour:
   summingMethod: 1
   obstacleAvoidanceTag: 
   steeringForce: {x: 0, y: 0, z: 0}
-  theta: 1
-  prWallAvoidance: 1
-  prObstacleAvoidance: 1
-  prSeparation: 1
-  prFlee: 1
-  prEvade: 1
-  prAlignment: 1
-  prCohesion: 1
-  prWander: 1
-  prSeek: 1
-  prArrive: 1
-  prPursuit: 1
+  prWallAvoidance: 0
+  prObstacleAvoidance: 0
+  prSeparation: 0
+  prFlee: 0
+  prEvade: 0
+  prAlignment: 0
+  prCohesion: 0
+  prWander: 0
+  prSeek: 0
+  prArrive: 0
+  prPursuit: 0
 --- !u!1 &1872985648
 GameObject:
   m_ObjectHideFlags: 0

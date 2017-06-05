@@ -140,13 +140,12 @@ public class PersonController : MovingEntityController
         else
         {
             steeringForce = steeringBehaviour.calculate();
-            Debug.Log(movingEntity.instanceName + "'s steeringForce is " + steeringForce);
             applyVelocity(steeringForce);
         }
 
         if (movingEntity.GetComponent<Rigidbody>().velocity != Vector3.zero && movingEntity.isGrounded)
         {
-            movingEntity.heading = new Vector3(movingEntity.velocity.x, 0, movingEntity.velocity.z);
+            movingEntity.heading = Vector3.RotateTowards(movingEntity.heading, new Vector3(movingEntity.velocity.x, 0, movingEntity.velocity.z), movingEntity.rotationOffset * Time.deltaTime, Mathf.Infinity);
         }
     }
 

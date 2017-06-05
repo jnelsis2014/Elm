@@ -167,27 +167,6 @@ public class Person : MovingEntity
         }
     }
 
-    public override float rotationOffset
-    {
-        get
-        {
-            return 2f;
-        }
-    }
-
-    public override float maxSpeed
-    {
-        get
-        {
-            return 5f;
-        }
-
-        set
-        {
-            Debug.Log("Cannot set " + instanceName + "'s maxSpeed with a setter.");
-        }
-    }
-
     private float _minObstacleDetectDistance;
 
     private void Awake()
@@ -282,9 +261,6 @@ public class Person : MovingEntity
                 break;
             }
         }
-
-        if (result == null)
-            Debug.Log("Attempted to find an occupied point in " + instanceName + "'s MovingEntity points, but there were none.");
 
         return result;
     }

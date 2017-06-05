@@ -156,8 +156,6 @@ public class CameraController : MonoBehaviour
 
             _dist = Mathf.Clamp(_dist - Input.GetAxis("Mouse ScrollWheel") * 5, _distMin, _distMax);
             //clamp the zoom distance so that it cannot exceed a minimum or maximum distance
-
-            Debug.Log(Input.GetAxis("Mouse ScrollWheel"));
             //distance already initialized to a default value. value is subtracted by mouse scroll 
             //wheel input times five, clamped between _distMin and _distMax
 

@@ -37,10 +37,7 @@ public abstract class MovingEntity : BaseEntity
         set;
     }
 
-    public abstract float rotationOffset
-    {
-        get;
-    }
+    public float rotationOffset;
 
     public abstract bool isMutable
     {
@@ -112,11 +109,7 @@ public abstract class MovingEntity : BaseEntity
         }
     }
 
-    public abstract float maxSpeed
-    {
-        get;
-        set;
-    }
+    public float maxSpeed;
 
     public abstract float maxForce
     {

@@ -113,7 +113,6 @@ public abstract class Weapon : Destructable , IHoldable
         Rigidbody entityRB = theEntity.GetComponent<Rigidbody>();
         if (entityRB != null && theEntity.tag != "player")
             entityRB.AddForceAtPosition(transform.forward + (entityRB.mass * entityRB.velocity), collision.transform.position, ForceMode.Force);
-        Debug.Log(instanceName + " collided with " + theEntity.instanceName);
     }
 
     public float getInteractableDistance(Vector3 MovingEntityForward)

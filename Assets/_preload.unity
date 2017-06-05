@@ -1388,40 +1388,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d41fdb06de4761d498d871a1fdc8c796, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movingEntity: {fileID: 1838072864}
-  detectionBoxLength: 1
-  minDetectionBoxLength: 1
-  targetEntity1: {fileID: 289990054}
-  targetEntity2: {fileID: 0}
-  weightCohesion: 1
-  weightAlignment: 1
-  weightSeparation: 1
-  weightObstacleAvoidance: 1
-  weightWander: 1
-  weightWallAvoidance: 1
-  viewDistance: 1
-  wallDetectionFeelerLength: 1
-  feelers: 1
-  deceleration: 2
-  wanderRadius: 1
-  wanderDistance: 2
-  wanderJitter: 0.5
-  waypointSeekDistanceSqr: 1
-  weightSeek: 1
-  weightFlee: 1
-  weightArrive: 1
-  weightPursuit: 1
-  weightOffsetPursuit: 1
-  weightInterpose: 1
-  weightHide: 1
-  weightEvade: 1
-  weightFollowPath: 1
-  cellSpaceOn: 0
-  wallAvoidanceOn: 0
-  obstacleAvoidanceOn: 0
   seekOn: 0
   arriveOn: 0
-  wanderOn: 0
+  wanderOn: 1
   pursuitOn: 0
   offsetPursuitOn: 0
   interposeOn: 0
@@ -1433,9 +1402,38 @@ MonoBehaviour:
   separationOn: 0
   alignmentOn: 0
   cohesionOn: 0
+  wallAvoidanceOn: 0
+  obstacleAvoidanceOn: 0
+  movingEntity: {fileID: 1838072864}
+  targetEntity1: {fileID: 289990054}
+  targetEntity2: {fileID: 0}
+  detectionBoxLength: 1
+  minDetectionBoxLength: 1
+  weightCohesion: 1
+  weightAlignment: 1
+  weightSeparation: 1
+  weightObstacleAvoidance: 1
+  weightWallAvoidance: 1
+  weightWander: 1
+  wanderDistance: 1.5
+  wanderJitter: 0.2
+  waypointSeekDistanceSqr: 1
+  weightSeek: 1
+  weightFlee: 1
+  weightArrive: 1
+  weightPursuit: 1
+  weightOffsetPursuit: 1
+  weightInterpose: 1
+  weightHide: 1
+  weightEvade: 1
+  weightFollowPath: 1
+  deceleration: 2
+  wallDetectionFeelerLength: 1
+  feelers: 1
+  viewDistance: 1
+  wanderRadius: 1
+  cellSpaceOn: 0
   summingMethod: 1
-  obstacleAvoidanceTag: 
-  steeringForce: {x: 0, y: 0, z: 0}
   prWallAvoidance: 0
   prObstacleAvoidance: 0
   prSeparation: 0

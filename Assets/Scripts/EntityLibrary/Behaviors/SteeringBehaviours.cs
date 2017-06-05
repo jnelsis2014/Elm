@@ -4,39 +4,13 @@ using UnityEngine;
 
 public class SteeringBehaviours : MonoBehaviour
 {
+    //enum types
+    public enum Deceleration { slow = 3, normal = 2, fast = 1 };
 
-    public MovingEntity movingEntity;
-    public float detectionBoxLength;
-    public float minDetectionBoxLength;
-    public MovingEntity targetEntity1;
-    public MovingEntity targetEntity2;
-    public float weightCohesion;
-    public float weightAlignment;
-    public float weightSeparation;
-    public float weightObstacleAvoidance;
-    public float weightWander;
-    public float weightWallAvoidance;
-    public float viewDistance;
-    public float wallDetectionFeelerLength;
-    public float feelers;
-    public enum Deceleration { slow = 3, normal = 2, fast = 1};
-    public Deceleration deceleration;
-    public float wanderRadius;
-    public float wanderDistance;
-    public float wanderJitter;
-    public float waypointSeekDistanceSqr;
-    public float weightSeek;
-    public float weightFlee;
-    public float weightArrive;
-    public float weightPursuit;
-    public float weightOffsetPursuit;
-    public float weightInterpose;
-    public float weightHide;
-    public float weightEvade;
-    public float weightFollowPath;
-    public bool cellSpaceOn;
-    public bool wallAvoidanceOn;
-    public bool obstacleAvoidanceOn;
+
+
+    //unity editor params
+    //steering behaviour toggles
     public bool seekOn;
     public bool arriveOn;
     public bool wanderOn;
@@ -51,11 +25,63 @@ public class SteeringBehaviours : MonoBehaviour
     public bool separationOn;
     public bool alignmentOn;
     public bool cohesionOn;
+    public bool wallAvoidanceOn;
+    public bool obstacleAvoidanceOn;
+
+    //entities
+    public MovingEntity movingEntity;
+    public MovingEntity targetEntity1;
+    public MovingEntity targetEntity2;
+
+    //obstacle avoidance
+    public float detectionBoxLength;
+    public float minDetectionBoxLength;
+
+    //flocking weights
+    public float weightCohesion;
+    public float weightAlignment;
+    public float weightSeparation;
+
+    //obstacle/wall avoidance weights
+    public float weightObstacleAvoidance;
+    public float weightWallAvoidance;
+
+    //steering behaviour weights
+    public float weightWander;
+    public float wanderDistance;
+    public float wanderJitter;
+    public float waypointSeekDistanceSqr;
+    public float weightSeek;
+    public float weightFlee;
+    public float weightArrive;
+    public float weightPursuit;
+    public float weightOffsetPursuit;
+    public float weightInterpose;
+    public float weightHide;
+    public float weightEvade;
+    public float weightFollowPath;
+
+    //speed and deceleration
+    public Deceleration deceleration;
+
+    //wall avoidance/obstacle avoidance
+    public float wallDetectionFeelerLength;
+    public float feelers;
+    public float viewDistance;
+
+    //wander
+    public float wanderRadius;
+
+    //cell space partitioning
+    public bool cellSpaceOn;
+
+    //summing method
     public enum SummingMethod { weighted_average, prioritized, dithered};
     public SummingMethod summingMethod;
-    public string obstacleAvoidanceTag;
-    public Vector3 steeringForce;
-    private float theta;
+    
+    
+
+    
 
     //CalculateDithered probabilites
     public float prWallAvoidance;
@@ -70,11 +96,24 @@ public class SteeringBehaviours : MonoBehaviour
     public float prArrive;
     public float prPursuit;
 
+   //properties
+    public string obstacleAvoidanceTag
+    {
+        get
+        {
+            return movingEntity.ID.ToString() + ",";
+        }
+    }
+    
+    //private members
+    private Vector3 _steeringForce;
+    private float _theta;
+
     // Use this for initialization
     void Start()
     {
-        theta = Random.Range(0f, 1f) * Mathf.PI * 2;
-        _wanderTarget = new Vector3(wanderRadius * Mathf.Cos(theta), 0, wanderRadius * Mathf.Sin(theta));
+        _theta = Random.Range(0f, 1f) * Mathf.PI * 2;
+        _wanderTarget = new Vector3(wanderRadius * Mathf.Cos(_theta), 0, wanderRadius * Mathf.Sin(_theta));
     }
 
     // Update is called once per frame
@@ -99,7 +138,7 @@ public class SteeringBehaviours : MonoBehaviour
     public Vector3 calculate()
     {
         Debug.Log(movingEntity.instanceName + " is calculating its movement vector.");
-        steeringForce = Vector3.zero;
+        _steeringForce = Vector3.zero;
 
         if (!spacePartitioningOn)
         {
@@ -112,28 +151,28 @@ public class SteeringBehaviours : MonoBehaviour
         switch (summingMethod)
         {
             case SummingMethod.weighted_average:
-                steeringForce = calculateWeightedSum(); break;
+                _steeringForce = calculateWeightedSum(); break;
 
             case SummingMethod.prioritized:
-                steeringForce = calculatePrioritized(); break;
+                _steeringForce = calculatePrioritized(); break;
 
             case SummingMethod.dithered:
-                steeringForce = calculateDithered(); break;
+                _steeringForce = calculateDithered(); break;
 
             default:
-                steeringForce = new Vector3(0, 0, 0); break;
+                _steeringForce = new Vector3(0, 0, 0); break;
         }
-        return steeringForce;
+        return _steeringForce;
     }
 
     public float forwardComponent()
     {
-        return Vector3.Dot(movingEntity.heading, steeringForce);
+        return Vector3.Dot(movingEntity.heading, _steeringForce);
     }
 
     public float sideComponent()
     {
-        return Vector3.Dot(movingEntity.side, steeringForce);
+        return Vector3.Dot(movingEntity.side, _steeringForce);
     }
 
     public bool accumulateForce(ref Vector3 runningTotal, Vector3 forceToAdd)
@@ -166,19 +205,19 @@ public class SteeringBehaviours : MonoBehaviour
 
         if (wallAvoidanceOn)
         {
-            steeringForce += wallAvoidance(GameManager.getGameManager().walls) * weightWallAvoidance;
+            _steeringForce += wallAvoidance(GameManager.getGameManager().walls) * weightWallAvoidance;
         }
 
         if (obstacleAvoidanceOn)
         {
-            steeringForce += obstacleAvoidance(GameManager.getGameManager().baseEntities) * weightObstacleAvoidance;
+            _steeringForce += obstacleAvoidance(GameManager.getGameManager().baseEntities) * weightObstacleAvoidance;
         }
 
         if (evadeOn)
         {
             if (targetEntity1 != null)
             {
-                steeringForce += evade(targetEntity1) * weightEvade;
+                _steeringForce += evade(targetEntity1) * weightEvade;
             }
         }
 
@@ -186,7 +225,7 @@ public class SteeringBehaviours : MonoBehaviour
         {
             if (targetEntity1 != null)
             {
-                steeringForce += flee(targetEntity1.position) * weightFlee;
+                _steeringForce += flee(targetEntity1.position) * weightFlee;
             }
         }
 
@@ -194,22 +233,22 @@ public class SteeringBehaviours : MonoBehaviour
 
         if (seekOn)
         {
-            steeringForce += seek(targetEntity1.position) * weightSeek;
+            _steeringForce += seek(targetEntity1.position) * weightSeek;
         }
 
         if (arriveOn)
         {
-            steeringForce += arrive(targetEntity1.position, deceleration) * weightArrive;
+            _steeringForce += arrive(targetEntity1.position, deceleration) * weightArrive;
         }
 
         if (wanderOn)
         {
-            steeringForce += wander() * weightWander;
+            _steeringForce += wander() * weightWander;
         }
 
         if (pursuitOn)
         {
-            steeringForce += pursuit(targetEntity1) * weightPursuit;
+            _steeringForce += pursuit(targetEntity1) * weightPursuit;
         }
 
         //offset pursuit goes here
@@ -220,8 +259,8 @@ public class SteeringBehaviours : MonoBehaviour
 
         //follow path goes here
 
-        Vector3.ClampMagnitude(steeringForce, movingEntity.maxForce);
-        return steeringForce;
+        Vector3.ClampMagnitude(_steeringForce, movingEntity.maxForce);
+        return _steeringForce;
     }
 
     public Vector3 calculatePrioritized()
@@ -233,39 +272,39 @@ public class SteeringBehaviours : MonoBehaviour
         if (wallAvoidanceOn)
         {
             force = wallAvoidance(GameManager.getGameManager().walls) * weightWallAvoidance;
-            if (!accumulateForce(ref steeringForce, force)) { Debug.Log(velocityString); return steeringForce; }
-            velocityString += "'s current steering force with respect to wall avoidance is " + steeringForce + "\n";
+            if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString); return _steeringForce; }
+            velocityString += "'s current steering force with respect to wall avoidance is " + _steeringForce + "\n";
         }
-        velocityString += "'s current steering force with respect to wall avoidance " + steeringForce + "\n";
+        velocityString += "'s current steering force with respect to wall avoidance " + _steeringForce + "\n";
         if (obstacleAvoidanceOn)
         {
             force = obstacleAvoidance(GameManager.getGameManager().baseEntities) * weightObstacleAvoidance;
-            if (!accumulateForce(ref steeringForce, force)) { Debug.Log(velocityString); return steeringForce; }
-            velocityString += "'s current steering force with respect to obstacle avoidance is " + steeringForce + "\n";
+            if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString); return _steeringForce; }
+            velocityString += "'s current steering force with respect to obstacle avoidance is " + _steeringForce + "\n";
         }
-        velocityString += "'s current steering force with respect to obstacle avoidance " + steeringForce + "\n";
+        velocityString += "'s current steering force with respect to obstacle avoidance " + _steeringForce + "\n";
 
         if (evadeOn)
         {
             if (targetEntity1 != null)
             {
                 force = evade(targetEntity1) * weightEvade;
-                if (!accumulateForce(ref steeringForce, force)) { Debug.Log(velocityString); return steeringForce; }
+                if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString); return _steeringForce; }
             }
-            velocityString += "'s current steering force with respect to evasion is " + steeringForce + "\n";
+            velocityString += "'s current steering force with respect to evasion is " + _steeringForce + "\n";
         }
 
-        velocityString += "'s current steering force with respect to evasion is " + steeringForce + "\n";
+        velocityString += "'s current steering force with respect to evasion is " + _steeringForce + "\n";
 
         if (fleeOn)
         {
             if (targetEntity1 != null)
             {
                 force = flee(targetEntity1.position) * weightFlee;
-                if (!accumulateForce(ref steeringForce, force)) { Debug.Log(velocityString); return steeringForce; }
-                velocityString += "'s current steering force with respect to fleeing is " + steeringForce + "\n";
+                if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString); return _steeringForce; }
+                velocityString += "'s current steering force with respect to fleeing is " + _steeringForce + "\n";
             }
-            velocityString += "'s current steering force with respect to fleeing is " + steeringForce + "\n";
+            velocityString += "'s current steering force with respect to fleeing is " + _steeringForce + "\n";
         }
 
         //flocking behaviors and spatial partitioning considerations go here
@@ -274,34 +313,34 @@ public class SteeringBehaviours : MonoBehaviour
         {
             force = seek(targetEntity1.position) * weightSeek;
             Debug.Log(force);
-            if (!accumulateForce(ref steeringForce, force)) { Debug.Log(velocityString); return steeringForce; }
-            velocityString += "'s current steering force with respect to seeking is " + steeringForce + "\n";
+            if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString); return _steeringForce; }
+            velocityString += "'s current steering force with respect to seeking is " + _steeringForce + "\n";
         }
-        velocityString += "'s current steering force with respect to seeking is " + steeringForce + "\n";
+        velocityString += "'s current steering force with respect to seeking is " + _steeringForce + "\n";
 
         if (arriveOn)
         {
             force = arrive(targetEntity1.position, deceleration) * weightArrive;
-            if (!accumulateForce(ref steeringForce, force)) { Debug.Log(velocityString); return steeringForce; }
-            velocityString += "'s current steering force with respect to arriving is " + steeringForce + "\n";
+            if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString); return _steeringForce; }
+            velocityString += "'s current steering force with respect to arriving is " + _steeringForce + "\n";
         }
-        velocityString += "'s current steering force with respect to arriving is " + steeringForce + "\n";
+        velocityString += "'s current steering force with respect to arriving is " + _steeringForce + "\n";
 
         if (wanderOn)
         {
             force = wander() * weightWander;
-            if (!accumulateForce(ref steeringForce, force)) { Debug.Log(velocityString); return steeringForce; }
-            velocityString += "'s current steering force with respect to wandering is " + steeringForce + "\n";
+            if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString); return _steeringForce; }
+            velocityString += "'s current steering force with respect to wandering is " + _steeringForce + "\n";
         }
-        velocityString += "'s current steering force with respect to wandering is " + steeringForce + "\n";
+        velocityString += "'s current steering force with respect to wandering is " + _steeringForce + "\n";
 
         if (pursuitOn)
         {
             force = pursuit(targetEntity1) * weightPursuit;
-            if (!accumulateForce(ref steeringForce, force)) { Debug.Log(velocityString); return steeringForce; }
-            Debug.Log(movingEntity.instanceName + "'s current steering force with respect to pursuit is " + steeringForce);
+            if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString); return _steeringForce; }
+            Debug.Log(movingEntity.instanceName + "'s current steering force with respect to pursuit is " + _steeringForce);
         }
-        velocityString += "'s current steering force with respect to pursuit is " + steeringForce + "\n";
+        velocityString += "'s current steering force with respect to pursuit is " + _steeringForce + "\n";
         //offset pursuit goes here
 
         //interpose goes here
@@ -310,7 +349,7 @@ public class SteeringBehaviours : MonoBehaviour
 
         //follow path goes here
         //Debug.Log(velocityString);
-        return steeringForce;
+        return _steeringForce;
     }
 
     public Vector3 calculateDithered()

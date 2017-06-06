@@ -270,6 +270,7 @@ public class SteeringBehaviours : MonoBehaviour
             if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString + "\n broke early in wall avoidance"); return _steeringForce; }
         }
         velocityString += "'s current steering force with respect to wall avoidance " + _steeringForce + "\n";
+
         if (obstacleAvoidanceOn)
         {
             force = obstacleAvoidance(GameManager.getGameManager().baseEntities) * weightObstacleAvoidance;
@@ -285,7 +286,6 @@ public class SteeringBehaviours : MonoBehaviour
                 if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString + "\n broke early in evade"); return _steeringForce; }
             }
         }
-
         velocityString += "'s current steering force with respect to evasion is " + _steeringForce + "\n";
 
         if (fleeOn)
@@ -295,8 +295,8 @@ public class SteeringBehaviours : MonoBehaviour
                 force = flee(targetEntity1.position) * weightFlee;
                 if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString + "\n broke early in flee"); return _steeringForce; }
             }
-            velocityString += "'s current steering force with respect to fleeing is " + _steeringForce + "\n";
         }
+        velocityString += "'s current steering force with respect to fleeing is " + _steeringForce + "\n";
 
         //flocking behaviors and spatial partitioning considerations go here
 
@@ -327,6 +327,7 @@ public class SteeringBehaviours : MonoBehaviour
             if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString + "\n broke early in pursuit"); return _steeringForce; }
         }
         velocityString += "'s current steering force with respect to pursuit is " + _steeringForce + "\n";
+
         //offset pursuit goes here
 
         //interpose goes here
@@ -551,22 +552,26 @@ public class SteeringBehaviours : MonoBehaviour
 
     public Vector3 wander()
     {
+        Random.InitState(System.DateTime.Now.Millisecond);
+        float jitterThisTimeSlice = wanderJitter * Time.deltaTime;
         //if the wander target is not set, or the moving entity is near the wander target
-        if (wanderTarget == null || Vector3.Distance(movingEntity.transform.position, _wanderTarget) <= 1)
-        {
+        //if (Vector3.Distance(movingEntity.transform.position, _wanderTarget) <= .1)
+        //{
             //reset the wander target
             _wanderTarget += new Vector3(
-            UnityEngine.Random.Range(-1, 1) * wanderJitter,
+            Random.Range(-1f, 1f) * jitterThisTimeSlice,
             movingEntity.transform.position.y,
-            UnityEngine.Random.Range(-1, 1) * wanderJitter
+            Random.Range(-1f, 1f) * jitterThisTimeSlice
             );
-            _wanderTarget = wanderTarget.normalized;
+            _wanderTarget = _wanderTarget.normalized;
             _wanderTarget *= wanderRadius;
-            _wanderTarget = _wanderTarget + new Vector3(0, 0, wanderDistance);
-            _wanderTarget = transform.TransformPoint(_wanderTarget);
-        }
+        //}
+        Vector3 target = _wanderTarget + new Vector3(0, 0, wanderDistance);
+        Vector3 wTarget = transform.TransformPoint(target);
+        
         //move the local target wanderDistance units in front of the movingEntity
-        return seek(_wanderTarget);
+        Vector3 desiredVelocity = (wTarget - movingEntity.position).normalized * movingEntity.maxSpeed;
+        return desiredVelocity - movingEntity.velocity;
     }
 
     public Vector3 obstacleAvoidance(List<BaseEntity> obstacles)
@@ -588,7 +593,7 @@ public class SteeringBehaviours : MonoBehaviour
                 Vector3 localPos = transform.InverseTransformPoint(obstacle.position);
                 debugString += "obs localpos: " + localPos + "\n";
 
-                if (localPos.z >= 0) //if the obstacle is not behind the movingEntity
+                if (localPos.z >= -(movingEntity.bRadius + obstacle.bRadius)) //if the obstacle is not behind the movingEntity
                 {
                     float expandedRadius = obstacle.bRadius + movingEntity.bRadius;
                     debugString += "obs expanded radius: " + expandedRadius + "\n";

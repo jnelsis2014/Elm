@@ -69,8 +69,8 @@ public abstract class BaseEntity : MonoBehaviour
             //inform found
             debugString += instanceName + "'s type, " + this.GetType() + ", was found in list.\n";
             //in range
-            //if (Vector3.Distance(avoider.position, position) <= detectionLength)
-            //{
+            if (Vector3.Distance(avoider.position, position) <= detectionLength)
+            {
                 //Debug.Log(detectionLength);
                 //already tagged
                 if (obstacleAvoiderTags.Contains(avoider.obstacleAvoidanceTag))
@@ -84,13 +84,13 @@ public abstract class BaseEntity : MonoBehaviour
                     debugString += instanceName + " was within obstacle avoidance distance. Adding tag.\n";
                     obstacleAvoiderTags.Add(avoider.obstacleAvoidanceTag);
                 }
-            //}
+            }
             //in list, not in range. inform not in range and remove tag
-            //else
-            //{
+            else
+            {
                 //debugString += instanceName + " was not within obstacle avoidance distance. Removing tag.";
-                //obstacleAvoiderTags.Remove(avoider.obstacleAvoidanceTag);
-            //}
+                obstacleAvoiderTags.Remove(avoider.obstacleAvoidanceTag);
+            }
         }
         else
         {

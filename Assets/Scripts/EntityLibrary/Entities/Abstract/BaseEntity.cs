@@ -57,17 +57,17 @@ public abstract class BaseEntity : MonoBehaviour
 
     public void tagAsObstacle(MovingEntity avoider, float detectionLength)
     {
-        string debugString = "";
+        //string debugString = "";
         List<string> types = avoider.obstacleTypes.Split(',').ToList<string>();
-        debugString += avoider.instanceName + "'s obstacle avoidance list: \n";
-        foreach (string type in types)
-            debugString += type + "\n";
+        //debugString += avoider.instanceName + "'s obstacle avoidance list: \n";
+        //foreach (string type in types)
+            //debugString += type + "\n";
      
         //in list
         if (types.Contains(this.GetType().ToString()))
         {
             //inform found
-            debugString += instanceName + "'s type, " + this.GetType() + ", was found in list.\n";
+            //debugString += instanceName + "'s type, " + this.GetType() + ", was found in list.\n";
             //in range
             if (Vector3.Distance(avoider.position, position) <= detectionLength)
             {
@@ -76,12 +76,12 @@ public abstract class BaseEntity : MonoBehaviour
                 if (obstacleAvoiderTags.Contains(avoider.obstacleAvoidanceTag))
                 {
                     //inform already tagged
-                    debugString += instanceName + " was within obstacle avoidance distance, but already tagged.";
+                    //debugString += instanceName + " was within obstacle avoidance distance, but already tagged.";
                 }
                 else
                 {
                     //not in range. add to list and inform.
-                    debugString += instanceName + " was within obstacle avoidance distance. Adding tag.\n";
+                    //debugString += instanceName + " was within obstacle avoidance distance. Adding tag.\n";
                     obstacleAvoiderTags.Add(avoider.obstacleAvoidanceTag);
                 }
             }
@@ -95,7 +95,7 @@ public abstract class BaseEntity : MonoBehaviour
         else
         {
             //inform not in list
-            debugString += instanceName + "'s type, " + this.GetType() + ", was not found in list";
+            //debugString += instanceName + "'s type, " + this.GetType() + ", was not found in list";
         }
         //Debug.Log(debugString);
     }

@@ -212,7 +212,7 @@ public class Person : MovingEntity
         if (outOfRange != null)
         {
             _inInteractionRange.Remove(outOfRange);
-            Debug.Log(outOfRange.IID + " exceeded " + ID + "'s interaction range and was removed to its interaction range");
+            //Debug.Log(outOfRange.IID + " exceeded " + ID + "'s interaction range and was removed to its interaction range");
         }
         else
         {

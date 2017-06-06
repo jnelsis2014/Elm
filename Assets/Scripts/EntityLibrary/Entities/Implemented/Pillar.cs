@@ -37,6 +37,7 @@ public class Pillar : Obstacle {
     // Use this for initialization
     void Start () {
         GameManager.getGameManager().baseEntities.Add(this);
+        GameManager.getGameManager().obstacles.Add(this);
 	}
 	
 	// Update is called once per frame
@@ -47,5 +48,6 @@ public class Pillar : Obstacle {
     private void OnDestroy()
     {
         GameManager.getGameManager().baseEntities.Remove(this);
+        GameManager.getGameManager().obstacles.Remove(this);
     }
 }

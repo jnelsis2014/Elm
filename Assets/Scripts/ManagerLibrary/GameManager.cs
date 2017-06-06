@@ -12,6 +12,15 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public List<BaseEntity> _obstacles;
+    public List<BaseEntity> obstacles
+    {
+        get
+        {
+            return _obstacles;
+        }
+    }
+
     public List<MovingEntity> _movingEntities;
     public List<MovingEntity> MovingEntities
     {
@@ -38,14 +47,13 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-
+        Random.InitState(System.DateTime.Now.Millisecond);
 	}
 
     public void addBaseEntity(MovingEntity baseEntity)
     {
         _baseEntities.Add(baseEntity);
     }
-
 
     public void removeBaseEntity(MovingEntity baseEntity)
     {
@@ -69,9 +77,10 @@ public class GameManager : MonoBehaviour {
 
     public void tagObstaclesWithinViewRange(MovingEntity movingEntity, float obstacleDetectionLength)
     {
-        foreach (BaseEntity baseEntity in _baseEntities)
+        foreach (BaseEntity obstacle in _obstacles)
         {
-            baseEntity.tagAsObstacle(movingEntity, obstacleDetectionLength);
+            if (Vector3.Distance(movingEntity.position, obstacle.position) <= obstacleDetectionLength)
+                obstacle.tagAsObstacle(movingEntity, obstacleDetectionLength);
         }
     }
 }

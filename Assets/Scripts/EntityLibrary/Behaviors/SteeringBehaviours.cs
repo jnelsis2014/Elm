@@ -273,7 +273,7 @@ public class SteeringBehaviours : MonoBehaviour
 
         if (obstacleAvoidanceOn)
         {
-            force = obstacleAvoidance(GameManager.getGameManager().baseEntities) * weightObstacleAvoidance;
+            force = obstacleAvoidance(GameManager.getGameManager().obstacles) * weightObstacleAvoidance;
             if (!accumulateForce(ref _steeringForce, force)) { Debug.Log(velocityString + "\n broke early in obstacle avoidance"); return _steeringForce; }
         }
         velocityString += "'s current steering force with respect to obstacle avoidance " + _steeringForce + "\n";
@@ -552,7 +552,7 @@ public class SteeringBehaviours : MonoBehaviour
 
     public Vector3 wander()
     {
-        Random.InitState(System.DateTime.Now.Millisecond);
+        
         float jitterThisTimeSlice = wanderJitter * Time.deltaTime;
         //if the wander target is not set, or the moving entity is near the wander target
         //if (Vector3.Distance(movingEntity.transform.position, _wanderTarget) <= .1)
@@ -576,7 +576,7 @@ public class SteeringBehaviours : MonoBehaviour
 
     public Vector3 obstacleAvoidance(List<BaseEntity> obstacles)
     {
-        string debugString = "";
+        //string debugString = "";
         //detection box length is proportional to movingEntity velocity
         detectionBoxLength = minDetectionBoxLength + (movingEntity.speed / movingEntity.maxSpeed) * minDetectionBoxLength;
         movingEntity.gameManager.tagObstaclesWithinViewRange(movingEntity, detectionBoxLength);
@@ -586,24 +586,24 @@ public class SteeringBehaviours : MonoBehaviour
 
         foreach (BaseEntity obstacle in obstacles)
         {
-            obstacle.GetComponent<Renderer>().material.color = Color.blue;
+            //obstacle.GetComponent<Renderer>().material.color = Color.blue;
             if (obstacle.obstacleAvoiderTags.Contains(movingEntity.obstacleAvoidanceTag))
             {
-                debugString = movingEntity.instanceName + " detected " + obstacle.instanceName + " as an obstacle.\n";
+                //debugString = movingEntity.instanceName + " detected " + obstacle.instanceName + " as an obstacle.\n";
                 Vector3 localPos = transform.InverseTransformPoint(obstacle.position);
-                debugString += "obs localpos: " + localPos + "\n";
+                //debugString += "obs localpos: " + localPos + "\n";
 
                 if (localPos.z >= -(movingEntity.bRadius + obstacle.bRadius)) //if the obstacle is not behind the movingEntity
                 {
                     float expandedRadius = obstacle.bRadius + movingEntity.bRadius;
-                    debugString += "obs expanded radius: " + expandedRadius + "\n";
+                    //debugString += "obs expanded radius: " + expandedRadius + "\n";
                     if (Mathf.Abs(localPos.x) <= expandedRadius)
                     {
                         //intersection test with a circle representing the radius of
                         //the obstacle plus the radius of the movingEntity, which is the
                         //amount of space the movingEntity could collide with an obstacle
                         //in
-                        debugString += "OBS EXPANDED RADIUS INTERSECTS PATH\n";
+                        //debugString += "OBS EXPANDED RADIUS INTERSECTS PATH\n";
                         float forwardPos = localPos.z;
                         float sidePos = localPos.x;
                         float sqrtPart = Mathf.Sqrt(expandedRadius * expandedRadius - sidePos * sidePos);
@@ -611,19 +611,19 @@ public class SteeringBehaviours : MonoBehaviour
 
                         if (ip <= 0)
                             ip = forwardPos + sqrtPart;
-                        debugString += "Intersection point distance: " + ip + "\n distanceToClosestIP" + distToClosestIP + "\n";
+                        //debugString += "Intersection point distance: " + ip + "\n distanceToClosestIP" + distToClosestIP + "\n";
                         if (ip < distToClosestIP)
                         {
                             distToClosestIP = ip;
                             closestIntersectingObstacle = obstacle;
                             localPosOfClosestObstacle = localPos;
-                            obstacle.GetComponent<Renderer>().material.color = Color.red;
+                            //obstacle.GetComponent<Renderer>().material.color = Color.red;
                         }   
                     }
                 }
                 else
                 {
-                    debugString += "obs was behind " + movingEntity.instanceName + "\n";
+                    //debugString += "obs was behind " + movingEntity.instanceName + "\n";
                 }
             }
         }
@@ -632,7 +632,7 @@ public class SteeringBehaviours : MonoBehaviour
 
         if (closestIntersectingObstacle != null)
         {
-            debugString += "Closest intersecting obstacle: " + closestIntersectingObstacle.instanceName;
+            //debugString += "Closest intersecting obstacle: " + closestIntersectingObstacle.instanceName;
             float multiplier = 1.0f + (detectionBoxLength - localPosOfClosestObstacle.z) / detectionBoxLength;
 
             steeringForce.x = (closestIntersectingObstacle.bRadius - localPosOfClosestObstacle.x) * multiplier;
@@ -641,9 +641,11 @@ public class SteeringBehaviours : MonoBehaviour
 
             steeringForce.z = (closestIntersectingObstacle.bRadius - localPosOfClosestObstacle.z) * brakingWeight;
         }
-        Debug.Log(debugString);
+        
         //Debug.Log("the world space transformed vector is " + transform.TransformPoint(steeringForce));
         steeringForce = transform.TransformDirection(steeringForce);
+        //debugString += movingEntity.instanceName + "'s steering force is " + steeringForce;
+        //Debug.Log(debugString);
         if (!(Vector3.Distance(steeringForce, transform.position) < .1))
             return steeringForce;
         else

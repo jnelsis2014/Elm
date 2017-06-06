@@ -581,6 +581,7 @@ public class SteeringBehaviours : MonoBehaviour
 
         foreach (BaseEntity obstacle in obstacles)
         {
+            obstacle.GetComponent<Renderer>().material.color = Color.blue;
             if (obstacle.obstacleAvoiderTags.Contains(movingEntity.obstacleAvoidanceTag))
             {
                 debugString = movingEntity.instanceName + " detected " + obstacle.instanceName + " as an obstacle.\n";
@@ -611,7 +612,8 @@ public class SteeringBehaviours : MonoBehaviour
                             distToClosestIP = ip;
                             closestIntersectingObstacle = obstacle;
                             localPosOfClosestObstacle = localPos;
-                        }
+                            obstacle.GetComponent<Renderer>().material.color = Color.red;
+                        }   
                     }
                 }
                 else

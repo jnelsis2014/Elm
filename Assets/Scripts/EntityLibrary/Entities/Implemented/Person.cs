@@ -55,7 +55,7 @@ public class Person : MovingEntity
                 if (interactable.getInteractableDistance(transform.forward) <= result.getInteractableDistance(transform.forward))
                 {
                     result = interactable;
-                    Debug.Log("The closest interactable to " + instanceName + " is " + interactable.IInstanceName);
+                    //Debug.Log("The closest interactable to " + instanceName + " is " + interactable.IInstanceName);
                 }
             }
 
@@ -64,7 +64,7 @@ public class Person : MovingEntity
         set
         {
             _inInteractionRange.Add(value);
-            Debug.Log(value.IID + " entered " + ID + "'s interaction range and was added to its interaction range");
+            //Debug.Log(value.IID + " entered " + ID + "'s interaction range and was added to its interaction range");
         }
     }
 
@@ -77,7 +77,7 @@ public class Person : MovingEntity
 
             _inInteractionRange.Remove(value);
 
-            Debug.Log(value.IInstanceName + " was added to the weapons list of " + instanceName);
+            //Debug.Log(value.IInstanceName + " was added to the weapons list of " + instanceName);
             foreach (MovingEntityPoint point in MovingEntityPoints)
             {
                 if (point.occupant == null)

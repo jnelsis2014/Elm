@@ -17,7 +17,7 @@ public class Pillar : Obstacle {
     {
         get
         {
-            return ID + " " + globalName;
+            return globalName + " " + ID;
         }
     }
 

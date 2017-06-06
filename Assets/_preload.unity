@@ -1412,9 +1412,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d41fdb06de4761d498d871a1fdc8c796, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seekOn: 0
+  seekOn: 1
   arriveOn: 0
-  wanderOn: 1
+  wanderOn: 0
   pursuitOn: 0
   offsetPursuitOn: 0
   interposeOn: 0

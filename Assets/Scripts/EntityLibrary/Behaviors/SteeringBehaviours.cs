@@ -78,10 +78,6 @@ public class SteeringBehaviours : MonoBehaviour
     //summing method
     public enum SummingMethod { weighted_average, prioritized, dithered};
     public SummingMethod summingMethod;
-    
-    
-
-    
 
     //CalculateDithered probabilites
     public float prWallAvoidance;
@@ -338,7 +334,7 @@ public class SteeringBehaviours : MonoBehaviour
         //hide goes here
 
         //follow path goes here
-        Debug.Log(velocityString + "\n all forces applied");
+        //Debug.Log(velocityString + "\n all forces applied");
         return _steeringForce;
     }
 
@@ -580,7 +576,7 @@ public class SteeringBehaviours : MonoBehaviour
         detectionBoxLength = minDetectionBoxLength + (movingEntity.speed / movingEntity.maxSpeed) * minDetectionBoxLength;
         movingEntity.gameManager.tagObstaclesWithinViewRange(movingEntity, detectionBoxLength);
         BaseEntity closestIntersectingObstacle = null;
-        float distToClosestIP = Mathf.Infinity;
+        float distToClosestIP = float.MaxValue;
         Vector3 localPosOfClosestObstacle = Vector3.zero;
 
         foreach (BaseEntity obstacle in obstacles)
@@ -602,14 +598,14 @@ public class SteeringBehaviours : MonoBehaviour
                         //amount of space the movingEntity could collide with an obstacle
                         //in
                         debugString += "OBS EXPANDED RADIUS INTERSECTS PATH\n";
-                        float cX = localPos.z;
-                        float cY = localPos.x;
-                        float sqrtPart = Mathf.Sqrt(expandedRadius * expandedRadius - cX * cX);
-                        float ip = cX - sqrtPart;
+                        float cZ = localPos.z;
+                        float cX = localPos.x;
+                        float sqrtPart = Mathf.Sqrt(expandedRadius * expandedRadius - cZ * cZ);
+                        float ip = cZ - sqrtPart;
 
                         if (ip <= 0)
-                            ip = cX + sqrtPart;
-
+                            ip = cZ + sqrtPart;
+                        debugString += "Intersection point distance: " + ip + "\n distanceToClosestIP" + distToClosestIP + "\n";
                         if (ip < distToClosestIP)
                         {
                             distToClosestIP = ip;
@@ -630,8 +626,7 @@ public class SteeringBehaviours : MonoBehaviour
         if (closestIntersectingObstacle != null)
         {
             debugString += "Closest intersecting obstacle: " + closestIntersectingObstacle.instanceName;
-            float multiplier = 1.0f + (detectionBoxLength - localPosOfClosestObstacle.z) /
-            detectionBoxLength;
+            float multiplier = 1.0f + (detectionBoxLength - localPosOfClosestObstacle.z) / detectionBoxLength;
 
             steeringForce.x = (closestIntersectingObstacle.bRadius - localPosOfClosestObstacle.x) * multiplier;
 
@@ -640,10 +635,10 @@ public class SteeringBehaviours : MonoBehaviour
             steeringForce.z = (closestIntersectingObstacle.bRadius - localPosOfClosestObstacle.z) * brakingWeight;
         }
         Debug.Log(debugString);
-        Debug.Log("the world space transformed vector is " + transform.TransformPoint(steeringForce));
-        steeringForce = transform.TransformPoint(steeringForce);
+        //Debug.Log("the world space transformed vector is " + transform.TransformPoint(steeringForce));
+        steeringForce = transform.TransformDirection(steeringForce);
         if (!(Vector3.Distance(steeringForce, transform.position) < .1))
-            return transform.TransformPoint(steeringForce);
+            return steeringForce;
         else
             return Vector3.zero;
     }

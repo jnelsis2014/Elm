@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -232,7 +232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacleAvoiderTags: []
-  bRadius: 0.8
+  bRadius: 0.5
 --- !u!23 &198592755
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1009,7 +1009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacleAvoiderTags: []
-  bRadius: 0.8
+  bRadius: 0.5
 --- !u!23 &1376133320
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1289,7 +1289,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacleAvoiderTags: []
-  bRadius: 0.8
+  bRadius: 0.5
   obstacleTypes: Pillar
   rotationOffset: 5
   maxSpeed: 5
@@ -1432,11 +1432,11 @@ MonoBehaviour:
   targetEntity1: {fileID: 289990054}
   targetEntity2: {fileID: 0}
   detectionBoxLength: 0
-  minDetectionBoxLength: 10
+  minDetectionBoxLength: 2
   weightCohesion: 1
   weightAlignment: 1
   weightSeparation: 1
-  weightObstacleAvoidance: 2
+  weightObstacleAvoidance: 3
   weightWallAvoidance: 1
   weightWander: 1
   wanderDistance: 1.5
@@ -1500,7 +1500,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacleAvoiderTags: []
-  bRadius: 0.8
+  bRadius: 0.5
 --- !u!23 &1872985650
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1707,7 +1707,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacleAvoiderTags: []
-  bRadius: 0.8
+  bRadius: 0.5
 --- !u!23 &2018878536
 MeshRenderer:
   m_ObjectHideFlags: 0

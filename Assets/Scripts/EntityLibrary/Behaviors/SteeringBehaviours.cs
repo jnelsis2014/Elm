@@ -592,20 +592,20 @@ public class SteeringBehaviours : MonoBehaviour
                 {
                     float expandedRadius = obstacle.bRadius + movingEntity.bRadius;
                     debugString += "obs expanded radius: " + expandedRadius + "\n";
-                    if (Mathf.Abs(localPos.x) < expandedRadius)
+                    if (Mathf.Abs(localPos.x) <= expandedRadius)
                     {
                         //intersection test with a circle representing the radius of
                         //the obstacle plus the radius of the movingEntity, which is the
                         //amount of space the movingEntity could collide with an obstacle
                         //in
                         debugString += "OBS EXPANDED RADIUS INTERSECTS PATH\n";
-                        float cZ = localPos.z;
-                        float cX = localPos.x;
-                        float sqrtPart = Mathf.Sqrt(expandedRadius * expandedRadius - cZ * cZ);
-                        float ip = cZ - sqrtPart;
+                        float forwardPos = localPos.z;
+                        float sidePos = localPos.x;
+                        float sqrtPart = Mathf.Sqrt(expandedRadius * expandedRadius - sidePos * sidePos);
+                        float ip = forwardPos - sqrtPart;
 
                         if (ip <= 0)
-                            ip = cZ + sqrtPart;
+                            ip = forwardPos + sqrtPart;
                         debugString += "Intersection point distance: " + ip + "\n distanceToClosestIP" + distToClosestIP + "\n";
                         if (ip < distToClosestIP)
                         {

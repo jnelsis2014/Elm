@@ -335,7 +335,7 @@ public class SteeringBehaviours : MonoBehaviour
         //hide goes here
 
         //follow path goes here
-        //Debug.Log(velocityString + "\n all forces applied");
+        Debug.Log(velocityString + "\n all forces applied");
         return _steeringForce;
     }
 
@@ -564,6 +564,7 @@ public class SteeringBehaviours : MonoBehaviour
         debugString += "_wanderTarget: " + _wanderTarget + "\n";
         //reproject the vector onto a unit circle
         _wanderTarget.Normalize();
+        _wanderTarget.y = movingEntity.position.y;
         debugString += "Normalized _wanderTarget: " + _wanderTarget + "\n";
         //increase the length of the vector to the radius of the unit wander circle
         _wanderTarget *= wanderRadius;
@@ -573,12 +574,12 @@ public class SteeringBehaviours : MonoBehaviour
         debugString += "localTarget: " + localTarget + "\n";
         //convert the local coordinate of the target to world space
         Vector3 worldTarget = transform.TransformPoint(localTarget);
+        worldTarget.y = movingEntity.position.y;
         debugString += "worldTarget: " + worldTarget + "\n";
         //steer toward the target
-        debugString += "Returned force" + (worldTarget - movingEntity.position) + "\n";
+        debugString += "Returned force: " + worldTarget + " - " + movingEntity.position + " = " + (worldTarget - movingEntity.position) + "\n";
         Debug.Log(debugString);
-        worldTarget.y = movingEntity.position.y;
-        return (worldTarget - movingEntity.position).normalized;
+        return worldTarget - movingEntity.position;
     }
 
     public Vector3 obstacleAvoidance(List<BaseEntity> obstacles)

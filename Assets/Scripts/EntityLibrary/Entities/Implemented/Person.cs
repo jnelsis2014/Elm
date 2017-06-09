@@ -119,7 +119,7 @@ public class Person : MovingEntity
     {
         get
         {
-            return Mathf.Infinity;
+            return maxSpeed;
         }
 
         set

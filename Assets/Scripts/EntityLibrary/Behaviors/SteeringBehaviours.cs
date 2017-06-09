@@ -109,7 +109,7 @@ public class SteeringBehaviours : MonoBehaviour
     void Start()
     {
         _theta = Random.Range(0f, 1f) * Mathf.PI * 2;
-        _wanderTarget = new Vector3(wanderRadius * Mathf.Cos(_theta), 0, wanderRadius * Mathf.Sin(_theta));
+        _wanderTarget = new Vector3(wanderRadius * Mathf.Cos(_theta), movingEntity.position.y, wanderRadius * Mathf.Sin(_theta));
     }
 
     // Update is called once per frame
@@ -552,26 +552,33 @@ public class SteeringBehaviours : MonoBehaviour
 
     public Vector3 wander()
     {
-        
+        string debugString = "";
         float jitterThisTimeSlice = wanderJitter * Time.deltaTime;
-        //if the wander target is not set, or the moving entity is near the wander target
-        //if (Vector3.Distance(movingEntity.transform.position, _wanderTarget) <= .1)
-        //{
-            //reset the wander target
-            _wanderTarget += new Vector3(
-            Random.Range(-1f, 1f) * jitterThisTimeSlice,
-            movingEntity.transform.position.y,
-            Random.Range(-1f, 1f) * jitterThisTimeSlice
-            );
-            _wanderTarget = _wanderTarget.normalized;
-            _wanderTarget *= wanderRadius;
-        //}
-        Vector3 target = _wanderTarget + new Vector3(0, 0, wanderDistance);
-        Vector3 wTarget = transform.TransformPoint(target);
-        
-        //move the local target wanderDistance units in front of the movingEntity
-        Vector3 desiredVelocity = (wTarget - movingEntity.position).normalized * movingEntity.maxSpeed;
-        return desiredVelocity - movingEntity.velocity;
+        debugString += "jitterThisTimeSlice: " + jitterThisTimeSlice + "\n";
+        //add a small random vector to the wander targets position;
+        _wanderTarget += new Vector3(
+        Random.Range(-1f, 1f) * jitterThisTimeSlice,
+        0,
+        Random.Range(-1f, 1f) * jitterThisTimeSlice
+        );
+        debugString += "_wanderTarget: " + _wanderTarget + "\n";
+        //reproject the vector onto a unit circle
+        _wanderTarget.Normalize();
+        debugString += "Normalized _wanderTarget: " + _wanderTarget + "\n";
+        //increase the length of the vector to the radius of the unit wander circle
+        _wanderTarget *= wanderRadius;
+        debugString += "Normalized _wanderTarget w/ Radius applied: " + _wanderTarget + "\n";
+        //move the target wanderDistance units in front of the agent;
+        Vector3 localTarget = _wanderTarget + new Vector3(0, 0, wanderDistance);
+        debugString += "localTarget: " + localTarget + "\n";
+        //convert the local coordinate of the target to world space
+        Vector3 worldTarget = transform.TransformPoint(localTarget);
+        debugString += "worldTarget: " + worldTarget + "\n";
+        //steer toward the target
+        debugString += "Returned force" + (worldTarget - movingEntity.position) + "\n";
+        Debug.Log(debugString);
+        worldTarget.y = movingEntity.position.y;
+        return (worldTarget - movingEntity.position).normalized;
     }
 
     public Vector3 obstacleAvoidance(List<BaseEntity> obstacles)
@@ -618,7 +625,8 @@ public class SteeringBehaviours : MonoBehaviour
                             closestIntersectingObstacle = obstacle;
                             localPosOfClosestObstacle = localPos;
                             //obstacle.GetComponent<Renderer>().material.color = Color.red;
-                        }   
+                        }
+                        //Debug.Log(ip + ", " + obstacle + ", " + localPos);   
                     }
                 }
                 else

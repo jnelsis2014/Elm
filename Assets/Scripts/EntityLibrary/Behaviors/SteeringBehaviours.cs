@@ -601,7 +601,7 @@ public class SteeringBehaviours : MonoBehaviour
                 Vector3 localPos = transform.InverseTransformPoint(obstacle.position);
                 //debugString += "obs localpos: " + localPos + "\n";
 
-                if (localPos.z >= -(movingEntity.bRadius + obstacle.bRadius)) //if the obstacle is not behind the movingEntity
+                if (localPos.z >= 0) //if the obstacle is not behind the movingEntity
                 {
                     float expandedRadius = obstacle.bRadius + movingEntity.bRadius;
                     //debugString += "obs expanded radius: " + expandedRadius + "\n";
